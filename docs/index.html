@@ -71,7 +71,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
   <script>
-    fetch('https://pyanderson.github.io/meu_cartola/data/times.json')
+    const host = window.location.host == '' ? 'meucartola.pyanderson.dev' : window.location.host;
+    fetch(`https://${host}/data/times.json`)
       .then(function (response) {
         return response.json();
       })
@@ -144,7 +145,7 @@
       .catch(function (err) {
         console.log(err);
       });
-    fetch('https://pyanderson.github.io/meu_cartola/data/destaques.json')
+    fetch(`https://${host}/data/destaques.json`)
       .then(function (response) {
         return response.json();
       })
