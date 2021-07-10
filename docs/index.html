@@ -17,19 +17,19 @@
     <div class="row">
       <div class="col-sm-12">
         <h3 class="text-center">Pontuação Geral</h3>
-        <div id="gd"></div>
+        <div id="pontuacao"></div>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
         <h3 class="text-center">Posição</h3>
-        <div id="gd0"></div>
+        <div id="posicoes"></div>
       </div>
     </div>
     <div class="row">
       <div class="col-sm-12">
         <h3 class="text-center">Patrimônio</h3>
-        <div id="gd1"></div>
+        <div id="patrimonio"></div>
       </div>
     </div>
   </div>
@@ -40,9 +40,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
   <script>
-    Plotly.newPlot("gd", /* JSON object */ {
+    Plotly.newPlot("pontuacao", /* JSON object */ {
       "data": [{ "y": [1, 2, 3] }],
-      "layout": { "width": 600, "height": 400}
     })
   </script>
 </footer>
