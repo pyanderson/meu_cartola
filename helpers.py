@@ -11,4 +11,4 @@ def read_json(path, default=None):
 
 def write_json(path, data):
     with open(path, 'w') as jfile:
-        json.dump(data, jfile)
+        json.dump(data, jfile, ensure_ascii=False)
