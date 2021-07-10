@@ -1,7 +1,7 @@
 from operator import itemgetter
 
 # local imports
-from constants import ROUNDS_PATH, TEAMS_PATH
+from constants import HIGHLIGHTS_PATH, ROUNDS_PATH, TEAMS_PATH
 from helpers import read_json, write_json
 
 
@@ -30,6 +30,7 @@ def generate_teams_data():
                 teams[name]['patrimonio'].append(team['patrimonio'])
             except KeyError:
                 teams[name] = {
+                    'nome': name,
                     'total': team['pontos'],
                     'rodadas': [team['rodada_atual']],
                     'pontos': [0, team['pontos']],
@@ -51,7 +52,30 @@ def generate_teams_data():
         patrimony = sorted(patrimony, key=itemgetter(1))
         teams[patrimony[-1][0]]['maior_valorização_da_rodada'] += 1
         teams[patrimony[0][0]]['pior_valorização_da_rodada'] += 1
+    best = max(teams.values(), key=itemgetter('melhor_da_rodada'))
+    worst = max(teams.values(), key=itemgetter('pior_da_rodada'))
+    rich = max(teams.values(), key=itemgetter('maior_valorização_da_rodada'))
+    poor = max(teams.values(), key=itemgetter('pior_valorização_da_rodada'))
+    highlights = {
+        'melhor_da_rodada': {
+            'nome': best['nome'],
+            'total': best['melhor_da_rodada']
+        },
+        'pior_da_rodada': {
+            'nome': worst['nome'],
+            'total': worst['pior_da_rodada']
+        },
+        'maior_valorização_da_rodada': {
+            'nome': rich['nome'],
+            'total': rich['maior_valorização_da_rodada']
+        },
+        'pior_valorização_da_rodada': {
+            'nome': poor['nome'],
+            'total': poor['pior_valorização_da_rodada']
+        }
+    }
     write_json(TEAMS_PATH, teams)
+    write_json(HIGHLIGHTS_PATH, highlights)
     return teams
 
 
