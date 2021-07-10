@@ -14,22 +14,41 @@
     <p>Estatísticas da melhor liga do Brasil!</p>
   </div>
   <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <h3 class="text-center">Pontuação Geral</h3>
-        <div id="pontuacao"></div>
+    <ul class="nav nav-tabs" id="main-tab-nav" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="points-tabi-nav" data-toggle="tab" href="#points-tab" role="tab" aria-controls="points" aria-selected="false">Pontuação</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="positions-tab-nav" data-toggle="tab" href="#positions-tab" role="tab" aria-controls="positions" aria-selected="false">Posições</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="patrimony-tab-nav" data-toggle="tab" href="#patrimony-tab" role="tab" aria-controls="patrimony" aria-selected="false">Patrimônio</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="points-tab" role="tabpanel" aria-labelledby="points-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Pontuação Geral</h3>
+            <div id="points"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <h3 class="text-center">Posição</h3>
-        <div id="posicoes"></div>
+      <div class="tab-pane fade" id="positions-tab" role="tabpanel" aria-labelledby="positions-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Posição</h3>
+            <div id="positions"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <h3 class="text-center">Patrimônio</h3>
-        <div id="patrimonio"></div>
+      <div class="tab-pane fade" id="patrimony-tab" role="tabpanel" aria-labelledby="patrimony-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Patrimônio</h3>
+            <div id="patrimony"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -40,9 +59,53 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
   <script>
-    Plotly.newPlot("pontuacao", /* JSON object */ {
-      "data": [{ "y": [1, 2, 3] }],
-    })
+    var result = null;
+    fetch('https://pyanderson.github.io/meu_cartola/data/times.json')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (teams) {
+        const points = [];
+        const positions = [];
+        const patrimony = [];
+        for (const [name, data] of Object.entries(teams)) {
+          points.push({
+            'x': data['rodadas'],
+            'y': data['pontos'],
+            'name': name
+          });
+          positions.push({
+            'x': data['rodadas'],
+            'y': data['posicoes'],
+            'name': name
+          });
+          patrimony.push({
+            'x': data['rodadas'],
+            'y': data['patrimonio'],
+            'name': name
+          });
+        }
+        Plotly.newPlot('points', points, {'xaxis': {'title': 'Rodadas'}, 'yaxis': {'title': 'Pontos'}})
+          .then(function (chart) {
+            Plotly.newPlot('positions', positions,
+              {
+                'xaxis': {'title': 'Rodadas'},
+                'yaxis': {'title': 'Posições', 'autorange': 'reversed'},
+                'width': chart.scrollWidth,
+                'height': chart.scrollHeight
+              });
+            Plotly.newPlot('patrimony', patrimony,
+              {
+                'xaxis': {'title': 'Rodadas'},
+                'yaxis': {'title': 'Patrimônio'},
+                'width': chart.scrollWidth,
+                'height': chart.scrollHeight
+              });
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
   </script>
 </footer>
 </html>
