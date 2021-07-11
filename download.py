@@ -6,8 +6,9 @@ import unicodedata as ud
 import requests
 
 # local imports
-from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH, PLAYERS_PATH,
-                       ROUNDS_PATH, SHIELDS_PATH)
+from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH,
+                       PLAYERS_HISTOTY_PATH, PLAYERS_PATH, ROUNDS_PATH,
+                       SHIELDS_PATH)
 from helpers import read_json, write_json
 
 
@@ -66,14 +67,44 @@ def download_league_data(league_slug, glb_tag, token):
     write_json(ROUNDS_PATH, rounds)
 
 
-def download_players_history():
+def fetch_player(glb_tag, token, _id):
+    return fetch(
+        f'auth/mercado/atleta/{_id}/pontuacao',
+        glb_tag,
+        token
+    )
+
+
+def get_player_round(history, round_id):
+    for _round in history:
+        if round_id == _round['rodada_id']:
+            return _round
+    return None
+
+
+def download_players_history(glb_tag, token):
     market = fetch('mercado/status')
+    players_history = read_json(PLAYERS_HISTOTY_PATH, {})
     for i in range(1, market['rodada_atual']):
         path = PLAYERS_PATH.replace('x', str(i))
-        if os.path.exists(path):
-            continue
-        players = fetch(f'atletas/pontuados/{i}')
+        players = read_json(path)
+        if players is None:
+            players = fetch(f'atletas/pontuados/{i}')
+        for _id, player in players['atletas'].items():
+            if _id not in players_history:
+                players_history[_id] = fetch_player(glb_tag, token, _id)
+            _round = get_player_round(players_history[_id], i)
+            if _round is None:
+                players_history[_id] = fetch_player(glb_tag, token, _id)
+            _round = get_player_round(players_history[_id], i)
+            if _round is None:
+                continue
+            _round['preco_anteriror'] = (
+                _round['preco'] + (_round['variacao'] * -1)
+            )
+            player.update(_round)
         write_json(path, players)
+    write_json(PLAYERS_HISTOTY_PATH, players_history)
 
 
 if __name__ == '__main__':
@@ -97,4 +128,4 @@ if __name__ == '__main__':
     if args.glb_tag is None:
         raise SystemExit('é necessário um valor para a tag GLB')
     download_league_data(args.name, args.glb_tag, args.token)
-    download_players_history()
+    download_players_history(args.glb_tag, args.token)
