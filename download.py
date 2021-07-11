@@ -6,8 +6,8 @@ import unicodedata as ud
 import requests
 
 # local imports
-from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH, ROUNDS_PATH,
-                       SHIELDS_PATH)
+from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH, PLAYERS_PATH,
+                       ROUNDS_PATH, SHIELDS_PATH)
 from helpers import read_json, write_json
 
 
@@ -25,14 +25,15 @@ def download_team_shield(team):
         png.write(res.content)
 
 
-def fetch(resource, glb_tag, token=None):
+def fetch(resource, glb_tag=None, token=None):
     url = f'https://api.cartolafc.globo.com/{resource}'
     headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0',  # noqa
-        'X-GLB-APP': 'cartola_web',
-        'X-GLB-Auth': 'oidc',
-        'X-GLB-Tag': glb_tag
     }
+    if glb_tag is not None:
+        headers['X-GLB-APP'] = 'cartola_web'
+        headers['X-GLB-Auth'] = 'oidc'
+        headers['X-GLB-Tag'] = glb_tag
     if token is not None:
         headers['Authorization'] = f'Bearer {token}'
     res = requests.get(url, headers=headers)
@@ -41,9 +42,9 @@ def fetch(resource, glb_tag, token=None):
     return res.json()
 
 
-def get_round(_round, teams, glb_tag):
+def get_round(_round, teams):
     return [
-        fetch(f'time/id/{team["time_id"]}/{_round}', glb_tag) for team in teams
+        fetch(f'time/id/{team["time_id"]}/{_round}') for team in teams
     ]
 
 
@@ -51,11 +52,11 @@ def download_league_data(league_slug, glb_tag, token):
     if not os.path.exists(DATA_PATH):
         os.makedirs(DATA_PATH)
     rounds = read_json(ROUNDS_PATH, [])
-    market = fetch('mercado/status', glb_tag, token)
+    market = fetch('mercado/status')
     league = fetch(f'auth/liga/{league_slug}', glb_tag, token)
     # only search the missing rounds
     for i in range(len(rounds) + 1, market['rodada_atual']):
-        rounds.append(get_round(i, league['times'], glb_tag))
+        rounds.append(get_round(i, league['times']))
     # download the shields
     for team in rounds[-1]:
         download_team_shield(team)
@@ -63,6 +64,16 @@ def download_league_data(league_slug, glb_tag, token):
     write_json(MARKET_PATH, market)
     write_json(LEAGUE_PATH, league)
     write_json(ROUNDS_PATH, rounds)
+
+
+def download_players_history():
+    market = fetch('mercado/status')
+    for i in range(1, market['rodada_atual']):
+        path = PLAYERS_PATH.replace('x', str(i))
+        if os.path.exists(path):
+            continue
+        players = fetch(f'atletas/pontuados/{i}')
+        write_json(path, players)
 
 
 if __name__ == '__main__':
@@ -86,3 +97,4 @@ if __name__ == '__main__':
     if args.glb_tag is None:
         raise SystemExit('é necessário um valor para a tag GLB')
     download_league_data(args.name, args.glb_tag, args.token)
+    download_players_history()
