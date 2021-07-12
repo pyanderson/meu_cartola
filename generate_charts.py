@@ -32,7 +32,7 @@ def generate_teams_data():
                 teams[name] = {
                     'nome': name,
                     'total': team['pontos'],
-                    'rodadas': [team['rodada_atual']],
+                    'rodadas': [0, team['rodada_atual']],
                     'pontos': [0, team['pontos']],
                     'posicoes': [],
                     'patrimonio': [100, team['patrimonio']],
