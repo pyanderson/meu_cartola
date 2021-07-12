@@ -2,11 +2,12 @@
 <html>
 <head>
   <title>Meu Cartola</title>
-  <link rel="shortcut icon" type="image/jpg" href="images/favicon.ico"/>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/jpg" href="images/favicon.ico"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://bootstrap.themes.guide/hootstrap/theme.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <body>
   <div class="jumbotron text-center">
@@ -16,16 +17,19 @@
   <div class="container">
     <ul class="nav nav-tabs" id="main-tab-nav" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="points-tabi-nav" data-toggle="tab" href="#points-tab" role="tab" aria-controls="points" aria-selected="false">Pontuação</a>
+        <a class="nav-link active" id="points-tabi-nav" data-toggle="tab" href="#points-tab" role="tab" aria-controls="points-tab" aria-selected="true">Pontuação</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="positions-tab-nav" data-toggle="tab" href="#positions-tab" role="tab" aria-controls="positions" aria-selected="false">Posições</a>
+        <a class="nav-link" id="positions-tab-nav" data-toggle="tab" href="#positions-tab" role="tab" aria-controls="positions-tab" aria-selected="false">Posições</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="patrimony-tab-nav" data-toggle="tab" href="#patrimony-tab" role="tab" aria-controls="patrimony" aria-selected="false">Patrimônio</a>
+        <a class="nav-link" id="patrimony-tab-nav" data-toggle="tab" href="#patrimony-tab" role="tab" aria-controls="patrimony-tab" aria-selected="false">Patrimônio</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="highlights-tab-nav" data-toggle="tab" href="#highlights-tab" role="tab" aria-controls="highlights" aria-selected="false">Destaques</a>
+        <a class="nav-link" id="highlights-tab-nav" data-toggle="tab" href="#highlights-tab" role="tab" aria-controls="highlights-tab" aria-selected="false">Destaques</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="simulation-tab-nav" data-toggle="tab" href="#simulation-tab" role="tab" aria-controls="simulation-tab" aria-selected="false">E se...?</a>
       </li>
     </ul>
     <div class="tab-content">
@@ -58,117 +62,456 @@
           <div class="col-sm-12 mt-3">
             <h3 class="text-center">Destaques</h3>
             <div id="highlights" class="card-deck mt-3"></div>
-            <div id="highlights-table" class="mt-3"></div>
+            <div class="mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th>Nome</th>
+                    <th>Melhor da Rodada</th>
+                    <th>Pior da Rodada</th>
+                    <th>Maior Valorização da Rodada</th>
+                    <th>Pior Valorização da Rodada</th>
+                  </tr>
+                </thead>
+                <tbody id="highlights-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="simulation-tab" role="tabpanel" aria-labelledby="simulation-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">E se...??</h3>
+            <h5 class="text-center">O "E se...?" é um simulador onde você escolhe a rodada que quer escalar, pra saber se você teria mitado se tivesse deixado aquela escalação que resolveu mudar pouco antes do mercado fechar.</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3 mt-3">
+            <div class="form-group">
+              <label for="scheme">Escolha uma formação:</label>
+              <select class="form-control" id="scheme" name="scheme"></select>
+              <label for="round" class="mt-4">Escolha uma rodada:</label>
+              <select class="form-control" id="round" name="round"></select>
+              <label for="bank" class="mt-4">Qual o limite de cartoletas?</label>
+              <input type="text" class="form-control" id="bank" name="bank" placeholder="Deixe vazio para sem limite">
+            </div>
+            <div class="mt-4">
+              <table class="table table-hover table-bordered table-dark">
+                <tbody>
+                  <tr>
+                    <td>Preço:</td>
+                    <td class="text-center" id="team-value">$ 0</td>
+                  </tr>
+                  <tr>
+                    <td>Valorização:</td>
+                    <td class="text-center" id="team-variation">$ 0</td>
+                  </tr>
+                  <tr>
+                    <td>Pontuação:</td>
+                    <td class="text-center" id="team-points">0</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-9 mt-3">
+            <table class="table table-striped table-bordered table-hover">
+              <thead class="text-center">
+                <tr>
+                  <th>Pos</th>
+                  <th>Nome</th>
+                  <th>Clube</th>
+                  <th>Preço</th>
+                  <th>Valorização</th>
+                  <th>Pontuação</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="team-table"></tbody>
+            </table>
+            <input class="form-control mt-3" id="players-search" type="text" placeholder="Buscar...">
+            <table class="table table-striped table-bordered table-hover">
+              <thead class="text-center">
+                <tr>
+                  <th>Pos</th>
+                  <th>Nome</th>
+                  <th>Clube</th>
+                  <th>Preço</th>
+                  <th>Valorização</th>
+                  <th>Pontuação</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="players-table"></tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
   </div>
-</body>
-<footer>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
-  <script>
-    const host = window.location.host == '' ? 'meucartola.pyanderson.dev' : window.location.host;
-    fetch(`https://${host}/data/times.json`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (teams) {
-        const points = [];
-        const positions = [];
-        const patrimony = [];
-        let content = `
-            <table class="table table-striped table-hover">
-            <thead class="text-center">
-              <tr>
-                <th>Nome</th>
-                <th>Melhor da Rodada</th>
-                <th>Pior da Rodada</th>
-                <th>Maior Valorização da Rodada</th>
-                <th>Pior Valorização da Rodada</th>
+  <footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
+    <script>
+      const host = window.location.host == '' ? 'meucartola.pyanderson.dev' : window.location.host;
+      const actual_round = 10;
+      const user_data = {'team': {}};
+      const group = ['gol', 'lat', 'zag', 'mei', 'ata', 'tec'];
+
+      Array.prototype.toObject = function(key) {
+        const obj = {};
+        for (let i = 0; i < this.length; i++) {
+            obj[this[i][key]] = this[i];
+        }
+        return obj;
+      };
+
+      function reset_team_stats() {
+        user_data['team'] = {'gol': {}, 'lat': {}, 'zag': {}, 'mei': {}, 'ata': {}, 'tec': {}, 'points': 0, 'value': 0, 'variation': 0, captain: false, 'players': {}};
+        group.forEach(function (pos) {
+          for (let i = 0; i < user_data['selected_scheme']['posicoes'][pos]; i++) {
+            const tr_id = `team-${pos}-${i}`;
+            user_data['team'][pos][tr_id] = 'empty';
+          }
+        });
+      }
+
+      function update_team_stats() {
+        $('#team-value').html('$ ' + user_data['team']['value'].toFixed(2));
+        $('#team-variation').html('$ ' + user_data['team']['variation'].toFixed(2));
+        $('#team-points').html(user_data['team']['points'].toFixed(2));
+      }
+
+      function remove_player(id) {
+        const player = user_data['players']['atletas'][id];
+        const pos = group[player['posicao_id']-1];
+        for (const [tr_id, cur_player] of Object.entries(user_data['team'][pos])) {
+          if (cur_player['id'] == player['id']) {
+            $('#' + tr_id).html(`
+                <td class="text-center text-uppercase">${pos}</td>
+                <td class="text-left"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+            `);
+            const btn = $(`#player-button-${player['id']}`);
+            btn.prop('class', 'btn btn-success');
+            btn.val('+');
+            btn.html('<i class="fas fa-plus">');
+            user_data['team'][pos][tr_id] = 'empty';
+            user_data['team']['points'] -= player['pontuacao'];
+            user_data['team']['value'] -= player['preco_anterior'];
+            user_data['team']['variation'] -= player['variacao'];
+            if (user_data['team']['captain'] && user_data['team']['captain']['id'] == id) {
+              remove_captain(id);
+            }
+            delete user_data['team']['players'][id]
+            update_team_stats();
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function add_captain(id) {
+        const player = user_data['players']['atletas'][id];
+        const pos = group[player['posicao_id']-1];
+        if (user_data['team']['captain']) {
+          remove_captain(user_data['team']['captain']['id']);
+        }
+        user_data['team']['points'] += player['pontuacao'];
+        user_data['team']['captain'] = player;
+        update_team_stats();
+      }
+
+      function remove_captain(id) {
+        const player = user_data['players']['atletas'][id];
+        const pos = group[player['posicao_id']-1];
+        if (id in user_data['team']['players']) {
+          user_data['team']['points'] -= player['pontuacao'];
+          if (user_data['team']['captain'] && user_data['team']['captain']['id'] == id) {
+            user_data['team']['captain'] = false;
+          }
+        }
+        update_team_stats();
+      }
+
+      function add_player(id) {
+        const player = user_data['players']['atletas'][id];
+        const player_team = user_data['players']['clubes'][player['clube_id']];
+        const pos = group[player['posicao_id']-1];
+        for (const [tr_id, space] of Object.entries(user_data['team'][pos])) {
+          if (space == 'empty') {
+            $('#' + tr_id).html(`
+                <td class="text-center text-uppercase">${pos}</td>
+                <td class="text-left">${player['apelido']}</td>
+                <td class="text-center">
+                  <img class="img-thumbnail" src="${player_team['escudos']['30x30']}" alt="${player_team['nome']}" width="30" height="30">
+                  <p style="display: none;">${player_team['nome']}</p>
+                </td>
+                <td class="text-center">$ ${player['preco_anterior'].toFixed(2)}</td>
+                <td class="text-center">$ ${player['variacao'].toFixed(2)}</td>
+                <td class="text-center">${player['pontuacao'].toFixed(2)}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-danger" name="team-player-button" id="team-player-button-${player['id']}" value="-"><i class="fas fa-minus"></i></button>
+                  <button type="button" class="btn btn-danger" name="team-captain-button" id="team-captain-button-${player['id']}" value="-"><i class="fas fa-copyright"></i></button>
+                </td>
+            `);
+            user_data['team'][pos][tr_id] = player;
+            user_data['team']['points'] += player['pontuacao'];
+            user_data['team']['value'] += player['preco_anterior'];
+            user_data['team']['variation'] += player['variacao'];
+            user_data['team']['players'][id] = player;
+            update_team_stats();
+            $('button[name="team-player-button"]').on('click', function(event) {
+              event.preventDefault();
+              const btn = $(this);
+              const id = btn.attr('id').split('team-player-button-')[1];
+              remove_player(id);
+            });
+            $('button[name="team-captain-button"]').on('click', function(event) {
+              event.preventDefault();
+              const btn = $(this);
+              const id = btn.attr('id').split('team-captain-button-')[1];
+              const value = btn.val();
+              if (value == '+') {
+                btn.prop('class', 'btn btn-danger');
+                btn.val('-');
+                btn.html('<i class="fas fa-copyright">');
+                remove_captain(id);
+              }
+              else if (value == '-') {
+                btn.prop('class', 'btn btn-info');
+                btn.val('+');
+                btn.html('<i class="fas fa-copyright">');
+                add_captain(id);
+              }
+            });
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function load_round_table() {
+        const valid_players = Object.entries(user_data['players']['atletas']).map(function (tuple){
+            tuple[1]['id'] = tuple[0];
+            return tuple[1];
+          })
+          .filter(function (player) {
+            return player['entrou_em_campo'];
+          });
+        const players_grouped = {};
+        valid_players.forEach(function (player) {
+          const key = group[player['posicao_id']-1];
+          if (!(key in players_grouped)) {
+            players_grouped[key] = [];
+          }
+          players_grouped[key].push(player);
+        });
+        $('#players-table').html('');
+        group.forEach(function (pos) {
+          players_grouped[pos].forEach(function (player) {
+            const player_team = user_data['players']['clubes'][player['clube_id']];
+            $('#players-table').append(`
+              <tr id="player-tr-${player['id']}">
+                <td class="text-center text-uppercase">${pos}</td>
+                <td class="text-left">${player['apelido']}</td>
+                <td class="text-center">
+                  <img class="img-thumbnail" src="${player_team['escudos']['30x30']}" alt="${player_team['nome']}" width="30" height="30">
+                  <p style="display: none;">${player_team['nome']}</p>
+                </td>
+                <td class="text-center">$ ${player['preco_anterior'].toFixed(2)}</td>
+                <td class="text-center">$ ${player['variacao'].toFixed(2)}</td>
+                <td class="text-center">${player['pontuacao'].toFixed(2)}</td>
+                <td class="text-center"><button type="button" class="btn btn-success" name="player-button" id="player-button-${player['id']}" value="+"><i class="fas fa-plus"></i></button></td>
               </tr>
-            </thead>
-            <tbody>
-        `;
-        for (const [name, data] of Object.entries(teams)) {
-          points.push({
-            'x': data['rodadas'],
-            'y': data['pontos'],
-            'name': name
+            `);
           });
-          positions.push({
-            'x': data['rodadas'],
-            'y': data['posicoes'],
-            'name': name
-          });
-          patrimony.push({
-            'x': data['rodadas'],
-            'y': data['patrimonio'],
-            'name': name
-          });
-          content += `
-                <tr>
-                  <td><img class="img-thumbnail" src="data/shields/${name}.png" alt="${name}" width="50" height="53"> ${name}</td>
-                  <td class="text-center">${data['melhor_da_rodada']}</td>
-                  <td class="text-center">${data['pior_da_rodada']}</td>
-                  <td class="text-center">${data['maior_valorização_da_rodada']}</td>
-                  <td class="text-center">${data['pior_valorização_da_rodada']}</td>
-                </tr>
-          `;
-        }
-        content += `
-              </tbody>
-            </table>
-        `
-        $("#highlights-table").html(content);
-        Plotly.newPlot('points', points, {'xaxis': {'title': 'Rodadas'}, 'yaxis': {'title': 'Pontos'}})
-          .then(function (chart) {
-            Plotly.newPlot('positions', positions,
-              {
-                'xaxis': {'title': 'Rodadas'},
-                'yaxis': {'title': 'Posições', 'autorange': 'reversed'},
-                'width': chart.scrollWidth,
-                'height': chart.scrollHeight
+        });
+        $('button[name="player-button"]').on('click', function(event) {
+          event.preventDefault();
+          const btn = $(this);
+          const id = btn.attr('id').split('player-button-')[1];
+          const value = btn.val();
+          if (value == '+' && add_player(id)) {
+            btn.prop('class', 'btn btn-danger');
+            btn.val('-');
+            btn.html('<i class="fas fa-minus">');
+          }
+          else if (value == '-' && remove_player(id)) {
+            btn.prop('class', 'btn btn-success');
+            btn.val('+');
+            btn.html('<i class="fas fa-plus">');
+          }
+        });
+      }
+
+      function load_round(round) {
+        fetch(`https://${host}/data/atletas/rodada-${round}.json`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (players) {
+            user_data['round'] = round;
+            user_data['players'] = players;
+            load_round_table();
+            reset_team_stats();
+            $('#players-search').on('keyup', function() {
+              const value = $(this).val().toLowerCase();
+              $('#players-table tr').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
               });
-            Plotly.newPlot('patrimony', patrimony,
-              {
-                'xaxis': {'title': 'Rodadas'},
-                'yaxis': {'title': 'Patrimônio'},
-                'width': chart.scrollWidth,
-                'height': chart.scrollHeight
-              });
+            });
+          })
+          .catch(function (err) {
+            console.log(err);
           });
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
-    fetch(`https://${host}/data/destaques.json`)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (highlights) {
-        let content = '';
-        for (const [name, data] of Object.entries(highlights)) {
-          const title = name.split('_').join(' ');
-          content += `
-              <div class="card text-center">
-                <div class="card-header text-capitalize">${title}</div>
-                <img class="card-img-top" src="data/shields/${data['nome']}.png" alt="${data['nome']}">
-                <div class="card-body">
-                  <h4 class="card-title">${data['nome']}</h4>
-                </div>
-                <div class="card-footer">${data['total']} vezes</div>
-              </div>
-          `;
+      }
+
+      function load_scheme() {
+        const scheme = user_data['schemes'][$('#scheme').val()];
+        user_data['selected_scheme'] = scheme;
+        reset_team_stats();
+        $('#team-table').html('');
+        group.forEach(function (pos) {
+          for (let i = 0; i < scheme['posicoes'][pos]; i++) {
+            const tr_id = `team-${pos}-${i}`;
+            $('#team-table').append(`
+              <tr id="${tr_id}">
+                <td class="text-center text-uppercase">${pos}</td>
+                <td class="text-left"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+                <td class="text-center"></td>
+              </tr>
+            `);
+          }
+        });
+        if (user_data['players'] !== undefined) {
+          load_round_table(user_data['players']);
         }
-        $("#highlights").html(content);
-      })
-      .catch(function (err) {
-        console.log(err);
+      }
+
+      $(document).ready(function() {
+        fetch(`https://${host}/data/times.json`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (teams) {
+            const points = [];
+            const positions = [];
+            const patrimony = [];
+            for (const [name, data] of Object.entries(teams)) {
+              points.push({
+                'x': data['rodadas'],
+                'y': data['pontos'],
+                'name': name
+              });
+              positions.push({
+                'x': data['rodadas'],
+                'y': data['posicoes'],
+                'name': name
+              });
+              patrimony.push({
+                'x': data['rodadas'],
+                'y': data['patrimonio'],
+                'name': name
+              });
+              $('#highlights-table').append(`
+                    <tr>
+                      <td><img class="img-thumbnail" src="data/shields/${name}.png" alt="${name}" width="50" height="53"> ${name}</td>
+                      <td class="text-center">${data['melhor_da_rodada']}</td>
+                      <td class="text-center">${data['pior_da_rodada']}</td>
+                      <td class="text-center">${data['maior_valorização_da_rodada']}</td>
+                      <td class="text-center">${data['pior_valorização_da_rodada']}</td>
+                    </tr>
+              `);
+            }
+            Plotly.newPlot('points', points, {'xaxis': {'title': 'Rodadas'}, 'yaxis': {'title': 'Pontos'}})
+              .then(function (chart) {
+                Plotly.newPlot('positions', positions,
+                  {
+                    'xaxis': {'title': 'Rodadas'},
+                    'yaxis': {'title': 'Posições', 'autorange': 'reversed'},
+                    'width': chart.scrollWidth,
+                    'height': chart.scrollHeight
+                  });
+                Plotly.newPlot('patrimony', patrimony,
+                  {
+                    'xaxis': {'title': 'Rodadas'},
+                    'yaxis': {'title': 'Patrimônio'},
+                    'width': chart.scrollWidth,
+                    'height': chart.scrollHeight
+                  });
+              });
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
+
+        fetch(`https://${host}/data/destaques.json`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (highlights) {
+            for (const [name, data] of Object.entries(highlights)) {
+              const title = name.split('_').join(' ');
+              $("#highlights").append(`
+                  <div class="card text-center">
+                    <div class="card-header text-capitalize">${title}</div>
+                    <img class="card-img-top" src="data/shields/${data['nome']}.png" alt="${data['nome']}">
+                    <div class="card-body">
+                      <h4 class="card-title">${data['nome']}</h4>
+                    </div>
+                    <div class="card-footer">${data['total']} vezes</div>
+                  </div>
+              `);
+            }
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
+
+
+        fetch(`https://${host}/data/esquemas.json`)
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (schemes) {
+            user_data['schemes'] = schemes.toObject('esquema_id');
+            schemes.forEach(function (scheme) {
+              $('select[name="scheme"]').append(`<option value="${scheme['esquema_id']}">${scheme['nome']}</option>`);
+            });
+            load_scheme();
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
+
+        for (let i = actual_round; i >= 1; i--) {
+          $('select[name="round"]').append(`<option value="${i}">Rodada ${i}</option>`);
+        }
+
+        $('#round').change(function() {
+          const round = $(this).val();
+          load_round(round);
+        });
+
+        $('#scheme').change(function() {
+          load_scheme();
+        });
+
+        load_round(actual_round);
       });
-  </script>
-</footer>
+    </script>
+  </footer>
+</body>
 </html>
