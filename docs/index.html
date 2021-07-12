@@ -435,6 +435,14 @@
                     </tr>
               `);
             }
+            const cmp = function (a, b) {
+              return a['y'][a['y'].length - 1] - b['y'][b['y'].length - 1]
+            }
+            points.sort(cmp);
+            points.reverse();
+            positions.sort(cmp);
+            patrimony.sort(cmp);
+            patrimony.reverse();
             Plotly.newPlot('points', points, {'xaxis': {'title': 'Rodadas'}, 'yaxis': {'title': 'Pontos'}})
               .then(function (chart) {
                 Plotly.newPlot('positions', positions,
