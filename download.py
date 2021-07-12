@@ -99,9 +99,12 @@ def download_players_history(glb_tag, token):
             _round = get_player_round(players_history[_id], i)
             if _round is None:
                 continue
-            _round['preco_anterior'] = (
-                _round['preco'] + (_round['variacao'] * -1)
-            )
+            try:
+                _round['preco_anterior'] = (
+                    _round['preco'] + (_round['variacao'] * -1)
+                )
+            except TypeError:
+                continue
             player.update(_round)
         write_json(path, players)
     write_json(PLAYERS_HISTOTY_PATH, players_history)
