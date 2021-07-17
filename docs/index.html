@@ -185,6 +185,27 @@
         $('#team-points').html(user_data['team']['points'].toFixed(2));
       }
 
+      function refresh_players_table() {
+        const action = {}
+        group.forEach(function (pos) {
+          if (Object.values(user_data['team'][pos]).findIndex(function (item) {return item == 'empty'}) == -1) {
+            action[pos] = 'hide';
+          } else {
+            action[pos] = 'show'
+          }
+        });
+        Object.values($('td[name="position"]')).forEach(function(element) {
+          const td = $(element);
+          const tr = td.parent();
+          const pos = td.text()
+          if (action[pos] == 'hide' && tr.find('button').val() == '+') {
+            tr.hide();
+          } else {
+            tr.show();
+          }
+        });
+      }
+
       function remove_player(id) {
         const player = user_data['players']['atletas'][id];
         const pos = group[player['posicao_id']-1];
@@ -204,13 +225,13 @@
             btn.val('+');
             btn.html('<i class="fas fa-plus">');
             user_data['team'][pos][tr_id] = 'empty';
+            delete user_data['team']['players'][id]
             user_data['team']['points'] -= player['pontuacao'];
             user_data['team']['value'] -= player['preco_anterior'];
             user_data['team']['variation'] -= player['variacao'];
             if (user_data['team']['captain'] && user_data['team']['captain']['id'] == id) {
               remove_captain(id);
             }
-            delete user_data['team']['players'][id]
             update_team_stats();
             return true;
           }
@@ -262,12 +283,20 @@
                   <button type="button" class="btn btn-danger" name="team-captain-button" id="team-captain-button-${player['id']}" value="-"><i class="fas fa-copyright"></i></button>
                 </td>
             `);
+
+            if (pos == 'tec') {
+              $(`#team-captain-button-${player['id']}`).remove();
+            }
+
+            // update data
             user_data['team'][pos][tr_id] = player;
+            user_data['team']['players'][id] = player;
             user_data['team']['points'] += player['pontuacao'];
             user_data['team']['value'] += player['preco_anterior'];
             user_data['team']['variation'] += player['variacao'];
-            user_data['team']['players'][id] = player;
             update_team_stats();
+
+            // events
             $('button[name="team-player-button"]').on('click', function(event) {
               event.preventDefault();
               const btn = $(this);
@@ -320,7 +349,7 @@
             const player_team = user_data['players']['clubes'][player['clube_id']];
             $('#players-table').append(`
               <tr id="player-tr-${player['id']}">
-                <td class="text-center text-uppercase">${pos}</td>
+                <td class="text-center text-uppercase" name="position">${pos}</td>
                 <td class="text-left">${player['apelido']}</td>
                 <td class="text-center">
                   <img class="img-thumbnail" src="${player_team['escudos']['30x30']}" alt="${player_team['nome']}" width="30" height="30">
@@ -334,6 +363,9 @@
             `);
           });
         });
+
+        refresh_players_table();
+
         $('button[name="player-button"]').on('click', function(event) {
           event.preventDefault();
           const btn = $(this);
@@ -343,11 +375,13 @@
             btn.prop('class', 'btn btn-danger');
             btn.val('-');
             btn.html('<i class="fas fa-minus">');
+            refresh_players_table();
           }
           else if (value == '-' && remove_player(id)) {
             btn.prop('class', 'btn btn-success');
             btn.val('+');
             btn.html('<i class="fas fa-plus">');
+            refresh_players_table();
           }
         });
       }
