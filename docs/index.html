@@ -31,6 +31,9 @@
       <li class="nav-item">
         <a class="nav-link" id="simulation-tab-nav" data-toggle="tab" href="#simulation-tab" role="tab" aria-controls="simulation-tab" aria-selected="false">E se...?</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="best-tab-nav" data-toggle="tab" href="#best-tab" role="tab" aria-controls="best-tab" aria-selected="false">Melhores Times</a>
+      </li>
     </ul>
     <div class="tab-content">
       <div class="tab-pane fade show active" id="points-tab" role="tabpanel" aria-labelledby="points-tab">
@@ -145,6 +148,14 @@
               </thead>
               <tbody id="players-table"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="best-tab" role="tabpanel" aria-labelledby="best-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Melhores Times</h3>
+            <div id="best" class="card-deck mt-3"></div>
           </div>
         </div>
       </div>

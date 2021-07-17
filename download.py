@@ -76,6 +76,8 @@ def fetch_player(glb_tag, token, _id):
 
 
 def get_player_round(history, round_id):
+    if history is None:
+        return None
     for _round in history:
         if round_id == _round['rodada_id']:
             return _round
@@ -91,14 +93,12 @@ def download_players_history(glb_tag, token):
         if players is None:
             players = fetch(f'atletas/pontuados/{i}')
         for _id, player in players['atletas'].items():
-            if _id not in players_history:
-                players_history[_id] = fetch_player(glb_tag, token, _id)
-            _round = get_player_round(players_history[_id], i)
+            _round = get_player_round(players_history.get(_id), i)
             if _round is None or _round['preco'] is None:
                 players_history[_id] = fetch_player(glb_tag, token, _id)
-            _round = get_player_round(players_history[_id], i)
-            if _round is None or _round['preco'] is None:
-                continue
+                _round = get_player_round(players_history.get(_id), i)
+                if _round is None or _round['preco'] is None:
+                    continue
             _round['preco_anterior'] = (
                 _round['preco'] + (_round['variacao'] * -1)
             )
