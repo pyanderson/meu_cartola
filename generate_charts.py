@@ -94,7 +94,11 @@ def generate_schemes_best():
         teams = []
         for scheme in schemes:
             team = {
-                'esquema': scheme, 'jogadores': [], 'pontuacao': 0, 'preco': 0
+                    'esquema': scheme,
+                    'jogadores': [],
+                    'pontuacao': 0,
+                    'preco': 0,
+                    'valorizacao': 0
             }
             for pos, qty in scheme['posicoes'].items():
                 pos_index = group.index(pos) + 1
@@ -111,6 +115,7 @@ def generate_schemes_best():
             for i, player in enumerate(team['jogadores']):
                 team['pontuacao'] += player['pontos']
                 team['preco'] += player['preco_anterior']
+                team['valorizacao'] += player['variacao']
                 player['capitao'] = False
                 if (player['pontos'] > captain_points and
                         player['posicao_id'] != 6):
