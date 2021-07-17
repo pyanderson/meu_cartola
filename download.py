@@ -94,17 +94,14 @@ def download_players_history(glb_tag, token):
             if _id not in players_history:
                 players_history[_id] = fetch_player(glb_tag, token, _id)
             _round = get_player_round(players_history[_id], i)
-            if _round is None:
+            if _round is None or _round['preco'] is None:
                 players_history[_id] = fetch_player(glb_tag, token, _id)
             _round = get_player_round(players_history[_id], i)
-            if _round is None:
+            if _round is None or _round['preco'] is None:
                 continue
-            try:
-                _round['preco_anterior'] = (
-                    _round['preco'] + (_round['variacao'] * -1)
-                )
-            except TypeError:
-                continue
+            _round['preco_anterior'] = (
+                _round['preco'] + (_round['variacao'] * -1)
+            )
             player.update(_round)
         write_json(path, players)
     write_json(PLAYERS_HISTOTY_PATH, players_history)
