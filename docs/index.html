@@ -284,10 +284,6 @@
                 </td>
             `);
 
-            if (pos == 'tec') {
-              $(`#team-captain-button-${player['id']}`).remove();
-            }
-
             // update data
             user_data['team'][pos][tr_id] = player;
             user_data['team']['players'][id] = player;
@@ -303,24 +299,29 @@
               const id = btn.attr('id').split('team-player-button-')[1];
               remove_player(id);
             });
-            $('button[name="team-captain-button"]').on('click', function(event) {
-              event.preventDefault();
-              const btn = $(this);
-              const id = btn.attr('id').split('team-captain-button-')[1];
-              const value = btn.val();
-              if (value == '+') {
-                btn.prop('class', 'btn btn-danger');
-                btn.val('-');
-                btn.html('<i class="fas fa-copyright">');
-                remove_captain(id);
-              }
-              else if (value == '-') {
-                btn.prop('class', 'btn btn-info');
-                btn.val('+');
-                btn.html('<i class="fas fa-copyright">');
-                add_captain(id);
-              }
-            });
+
+            if (pos == 'tec') {
+              $(`#team-captain-button-${player['id']}`).remove();
+            } else {
+              $('button[name="team-captain-button"]').on('click', function(event) {
+                event.preventDefault();
+                const btn = $(this);
+                const id = btn.attr('id').split('team-captain-button-')[1];
+                const value = btn.val();
+                if (value == '+') {
+                  btn.prop('class', 'btn btn-danger');
+                  btn.val('-');
+                  btn.html('<i class="fas fa-copyright">');
+                  remove_captain(id);
+                }
+                else if (value == '-') {
+                  btn.prop('class', 'btn btn-info');
+                  btn.val('+');
+                  btn.html('<i class="fas fa-copyright">');
+                  add_captain(id);
+                }
+              });
+            }
             return true;
           }
         }
