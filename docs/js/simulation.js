@@ -39,6 +39,9 @@ function load_schemes() {
 
 function refresh_players_table() {
   const action = {}
+  if (Object.keys(user_data['team']).length == 0) {
+    return
+  }
   positions.forEach(function (pos) {
     if (Object.values(user_data['team'][pos]).findIndex(function (item) {return item == 'empty'}) == -1) {
       action[pos] = 'hide';
@@ -59,6 +62,9 @@ function refresh_players_table() {
 }
 
 function reset_team_stats() {
+  if (!('selected_scheme' in user_data)) {
+    return
+  }
   user_data['team'] = {'gol': {}, 'lat': {}, 'zag': {}, 'mei': {}, 'ata': {}, 'tec': {}, 'points': 0, 'value': 0, 'variation': 0, captain: false, 'players': {}};
   positions.forEach(function (pos) {
     for (let i = 0; i < user_data['selected_scheme']['posicoes'][pos]; i++) {
@@ -237,7 +243,6 @@ function load_round(round) {
 function add_round_options() {
   for (let i = actual_round; i >= 1; i--) {
     $('select[name="round"]').append(`<option value="${i}">Rodada ${i}</option>`);
-    $('select[name="best-round"]').append(`<option value="${i}">Rodada ${i}</option>`);
   }
   // events
   $('#round').change(function() {

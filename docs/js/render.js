@@ -83,3 +83,81 @@ function render_action_button(btn, cls, value, symbol) {
   btn.val(value);
   btn.html(`<i class="fas fa-${symbol}">`);
 }
+
+function render_player_card(player) {
+  const pos = positions[player['posicao_id']-1];
+  return `
+  <div class="card text-center${player['capitao'] ? ' bg-info' : ''}">
+    <div class="card-body">
+      <span class="card-text badge badge-primary text-uppercase">${pos}</span>
+      <p class="card-text">${player['apelido']}</p>
+      <p class="card-text">${player['pontos'].toFixed(2)}</p>
+    </div>
+    <div class="card-footer">$ ${player['preco_anterior'].toFixed(2)}</div>
+  </div>
+  `;
+}
+
+function render_best_team_header(team) {
+  return `
+  <div class="row">
+    <div class="col-sm-4">
+      <table class="table table-striped table-bordered">
+        <tbody>
+          <tr>
+            <td>Preço:</td>
+            <td class="text-center">$ ${team['preco'].toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Valorização:</td>
+            <td class="text-center">$ ${team['valorizacao'].toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Pontuação:</td>
+            <td class="text-center">${team['pontuacao'].toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>Esquema:</td>
+            <td class="text-center">${team['esquema']['nome']}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `;
+}
+
+function render_best_team(team) {
+  const ids = [1, 3, 2, 4, 5, 6];
+  const field = ids.reduce(function (content, id) {
+    const players = team['jogadores'].filter(function (player) {
+      return player['posicao_id'] == id;
+    });
+    if (id == 2) {
+      players.splice(1, 0, 'empty', 'empty', 'empty');
+    } else if (players.length == 1) {
+      players.unshift('empty', 'empty');
+      players.push('empty', 'empty');
+    } else if (players.length == 2) {
+      players.unshift('empty');
+      players.splice(2, 0, 'empty');
+      players.push('empty')
+    } else if (players.length == 3) {
+      players.unshift('empty');
+      players.push('empty');
+    } else if (players.length == 4) {
+      players.splice(2, 0, 'empty');
+    }
+    const divs = players.reduce(function(value, player) {
+      if (player == 'empty') {
+        value += '<div class="col-sm-2 mt-2 mb-2"></div>';
+      } else {
+        value += `<div class="col-sm-2 mt-2 mb-2">${render_player_card(player)}</div>`;
+      }
+      return value;
+    }, '<div class="col-sm-1 mt-2 mb-2"></div>') + '<div class="col-sm-1 mt-2 mb-2"></div>';
+    content += `<div class="row">${divs}</div>`;
+    return content;
+  }, '');
+  return `<div class="border border-primary mt-5 mb-5">${render_best_team_header(team)}${field}</div>`;
+}
