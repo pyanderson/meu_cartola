@@ -1,14 +1,14 @@
 "use strict";
 
-function render_highlight_card(title, data) {
+function render_highlight_card(data) {
   return `
-  <div class="card text-center">
-    <div class="card-header text-capitalize">${title}</div>
+  <div class="card text-center mt-3 mb-3">
+    <div class="card-header text-capitalize">${data['title']}</div>
     <img class="card-img-top" src="data/escudos/${data['nome']}.png" alt="${data['nome']}">
     <div class="card-body">
       <h4 class="card-title">${data['nome']}</h4>
     </div>
-    <div class="card-footer">${data['total']} vezes</div>
+    <div class="card-footer">${data['total']} ${data['desc']}</div>
   </div>
     `;
 }

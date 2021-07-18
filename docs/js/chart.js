@@ -7,8 +7,12 @@ function load_highlights() {
     })
     .then(function (highlights) {
       for (const [name, data] of Object.entries(highlights)) {
-        const title = name.split('_').join(' ');
-        $("#highlights").append(render_highlight_card(title, data));
+        data['title'] = name.split('_').join(' ');
+      }
+      for (data of Object.values(highlights).sort(function (x, y) {
+        return x['pos'] - y ['pos'];
+      })) {
+        $("#highlights").append(render_highlight_card(data));
       }
     })
     .catch(function (err) {

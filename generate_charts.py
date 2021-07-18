@@ -41,62 +41,74 @@ def generate_highlights(teams):
         'melhor_da_rodada': {
             'nome': best['nome'],
             'total': best['melhor_da_rodada'],
-            'desc': 'vezes'
+            'desc': 'vezes',
+            'pos': 0
         },
         'pior_da_rodada': {
             'nome': worst['nome'],
             'total': worst['pior_da_rodada'],
-            'desc': 'vezes'
+            'desc': 'vezes',
+            'pos': 1
         },
         'maior_valorização_da_rodada': {
             'nome': rich['nome'],
             'total': rich['maior_valorização_da_rodada'],
-            'desc': 'vezes'
+            'desc': 'vezes',
+            'pos': 2
         },
         'pior_valorização_da_rodada': {
             'nome': poor['nome'],
             'total': poor['pior_valorização_da_rodada'],
-            'desc': 'vezes'
+            'desc': 'vezes',
+            'pos': 3
         },
         'goleador': {
             'nome': scorer['nome'],
             'total': scorer['scout']['G'],
-            'desc': 'gols'
+            'desc': 'gols',
+            'pos': 4
         },
         'garçom': {
             'nome': waiter['nome'],
             'total': waiter['scout']['A'],
-            'desc': 'assitências'
+            'desc': 'assitências',
+            'pos': 5
         },
         'retranqueiro': {
             'nome': solid_defense['nome'],
             'total': solid_defense['scout']['SG'],
-            'desc': 'SG garantidos'
+            'desc': 'SG garantidos',
+            'pos': 6
         },
         'passa_tudo': {
             'nome': inverse_scorer['nome'],
             'total': inverse_scorer['scout']['GS'],
-            'desc': 'gols sofridos'
+            'desc': 'gols sofridos',
+            'pos': 7
         },
         'perna_de_pau': {
             'nome': wooden_leg['nome'],
             'total': wooden_leg['scout']['G'],
-            'desc': 'gols'
+            'desc': 'gols',
+            'pos': 8
         },
         'joga_limpo': {
             'nome': fair_player['nome'],
             'total': fair_player['scout']['CV'],
-            'desc': 'cartões vermelhos'
+            'desc': 'cartões vermelhos',
+            'pos': 9
         },
         'descuidado': {
             'nome': careless['nome'],
             'total': careless['scout']['CA'],
-            'desc': 'cartões amarelos'
+            'desc': 'cartões amarelos',
+            'pos': 10
         },
         'briguento': {
             'nome': quarrelsom['nome'],
             'total': quarrelsom['scout']['CV'],
-            'desc': 'cartões vermelhos'
+            'desc': 'cartões vermelhos',
+            'pos': 11
         },
     }
 
