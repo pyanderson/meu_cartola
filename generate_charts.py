@@ -13,28 +13,91 @@ def rank(ls, key, teams):
         teams[name][key].append(i+1)
 
 
+def scout_getter(key):
+    return lambda x: itemgetter(key)(itemgetter('scout')(x))
+
+
 def generate_highlights(teams):
     best = max(teams.values(), key=itemgetter('melhor_da_rodada'))
     worst = max(teams.values(), key=itemgetter('pior_da_rodada'))
     rich = max(teams.values(), key=itemgetter('maior_valorização_da_rodada'))
     poor = max(teams.values(), key=itemgetter('pior_valorização_da_rodada'))
+    scouts = set()
+    for team in teams.values():
+        scouts.update(team['scout'].keys())
+    for team in teams.values():
+        for scout in scouts:
+            if scout not in team['scout']:
+                team['scout'][scout] = 0
+    scorer = max(teams.values(), key=scout_getter('G'))
+    waiter = max(teams.values(), key=scout_getter('A'))
+    solid_defense = max(teams.values(), key=scout_getter('SG'))
+    inverse_scorer = max(teams.values(), key=scout_getter('GS'))
+    wooden_leg = min(teams.values(), key=scout_getter('G'))
+    fair_player = min(teams.values(), key=scout_getter('CV'))
+    careless = max(teams.values(), key=scout_getter('CA'))
+    quarrelsom = max(teams.values(), key=scout_getter('CV'))
     return {
         'melhor_da_rodada': {
             'nome': best['nome'],
-            'total': best['melhor_da_rodada']
+            'total': best['melhor_da_rodada'],
+            'desc': 'vezes'
         },
         'pior_da_rodada': {
             'nome': worst['nome'],
-            'total': worst['pior_da_rodada']
+            'total': worst['pior_da_rodada'],
+            'desc': 'vezes'
         },
         'maior_valorização_da_rodada': {
             'nome': rich['nome'],
-            'total': rich['maior_valorização_da_rodada']
+            'total': rich['maior_valorização_da_rodada'],
+            'desc': 'vezes'
         },
         'pior_valorização_da_rodada': {
             'nome': poor['nome'],
-            'total': poor['pior_valorização_da_rodada']
-        }
+            'total': poor['pior_valorização_da_rodada'],
+            'desc': 'vezes'
+        },
+        'goleador': {
+            'nome': scorer['nome'],
+            'total': scorer['scout']['G'],
+            'desc': 'gols'
+        },
+        'garçom': {
+            'nome': waiter['nome'],
+            'total': waiter['scout']['A'],
+            'desc': 'assitências'
+        },
+        'retranqueiro': {
+            'nome': solid_defense['nome'],
+            'total': solid_defense['scout']['SG'],
+            'desc': 'SG garantidos'
+        },
+        'passa_tudo': {
+            'nome': inverse_scorer['nome'],
+            'total': inverse_scorer['scout']['GS'],
+            'desc': 'gols sofridos'
+        },
+        'perna_de_pau': {
+            'nome': wooden_leg['nome'],
+            'total': wooden_leg['scout']['G'],
+            'desc': 'gols'
+        },
+        'joga_limpo': {
+            'nome': fair_player['nome'],
+            'total': fair_player['scout']['CV'],
+            'desc': 'cartões vermelhos'
+        },
+        'descuidado': {
+            'nome': careless['nome'],
+            'total': careless['scout']['CA'],
+            'desc': 'cartões amarelos'
+        },
+        'briguento': {
+            'nome': quarrelsom['nome'],
+            'total': quarrelsom['scout']['CV'],
+            'desc': 'cartões vermelhos'
+        },
     }
 
 
@@ -67,8 +130,15 @@ def generate_teams_data():
                     'melhor_da_rodada': 0,
                     'pior_da_rodada': 0,
                     'maior_valorização_da_rodada': 0,
-                    'pior_valorização_da_rodada': 0
+                    'pior_valorização_da_rodada': 0,
+                    'scout': {}
                 }
+            for player in team['atletas']:
+                for key, value in player['scout'].items():
+                    try:
+                        teams[name]['scout'][key] += value
+                    except KeyError:
+                        teams[name]['scout'][key] = value
             positions.append((name, teams[name]['total']))
             patrimony.append((name, teams[name]['valorizacao'][-1]))
         rank(positions, 'posicoes', teams)
