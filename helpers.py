@@ -14,4 +14,4 @@ def write_json(path, data):
     if not os.path.exists(folder):
         os.makedirs(folder)
     with open(path, 'w') as jfile:
-        json.dump(data, jfile, ensure_ascii=False)
+        json.dump(data, jfile, ensure_ascii=False, sort_keys=True)
