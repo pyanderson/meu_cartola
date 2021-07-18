@@ -13,6 +13,17 @@ function render_highlight_card(data) {
     `;
 }
 
+function render_highlight_card_deck(highlights) {
+  const content = highlights.reduce(function (value, data){
+    return value + render_highlight_card(data);
+  }, '')
+  return `
+  <div class="card-deck">
+  ${content}
+  </div>
+  `;
+}
+
 function render_highlight_row(name, data) {
   return `
   <tr>
@@ -21,6 +32,12 @@ function render_highlight_row(name, data) {
     <td class="text-center">${data['pior_da_rodada']}</td>
     <td class="text-center">${data['maior_valorização_da_rodada']}</td>
     <td class="text-center">${data['pior_valorização_da_rodada']}</td>
+    <td class="text-center">${data['scout']['G']}</td>
+    <td class="text-center">${data['scout']['A']}</td>
+    <td class="text-center">${data['scout']['SG']}</td>
+    <td class="text-center">${data['scout']['GS']}</td>
+    <td class="text-center">${data['scout']['CA']}</td>
+    <td class="text-center">${data['scout']['CV']}</td>
   </tr>
   `;
 }
@@ -150,14 +167,11 @@ function render_best_team(team) {
     }
     const divs = players.reduce(function(value, player) {
       if (player == 'empty') {
-        value += '<div class="col-sm-2 mt-2 mb-2"></div>';
-      } else {
-        value += `<div class="col-sm-2 mt-2 mb-2">${render_player_card(player)}</div>`;
+        return value + '<div class="col-sm-2 mt-2 mb-2"></div>';
       }
-      return value;
+      return value + `<div class="col-sm-2 mt-2 mb-2">${render_player_card(player)}</div>`;
     }, '<div class="col-sm-1 mt-2 mb-2"></div>') + '<div class="col-sm-1 mt-2 mb-2"></div>';
-    content += `<div class="row">${divs}</div>`;
-    return content;
+    return content + `<div class="row">${divs}</div>`;
   }, '');
   return `<div class="border border-primary mt-5 mb-5">${render_best_team_header(team)}${field}</div>`;
 }

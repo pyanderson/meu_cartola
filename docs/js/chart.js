@@ -6,13 +6,21 @@ function load_highlights() {
       return response.json();
     })
     .then(function (highlights) {
+      const deck = []
       for (const [name, data] of Object.entries(highlights)) {
         data['title'] = name.split('_').join(' ');
       }
-      for (data of Object.values(highlights).sort(function (x, y) {
+      for (const data of Object.values(highlights).sort(function (x, y) {
         return x['pos'] - y ['pos'];
       })) {
-        $("#highlights").append(render_highlight_card(data));
+        deck.push(data);
+        if (deck.length % 4 == 0) {
+          $("#highlights").append(render_highlight_card_deck(deck));
+          deck.length = 0;
+        }
+      }
+      if (deck.length > 0) {
+        $("#highlights").append(render_highlight_card_deck(deck));
       }
     })
     .catch(function (err) {
