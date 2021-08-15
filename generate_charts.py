@@ -160,7 +160,7 @@ def add_missing_scouts(dest, scouts):
 def generate_teams_data():
     rounds = read_json(ROUNDS_PATH, [])
     teams = {}
-    league = read_json(LEAGUE_STATS_PATH, {'atletas': {}, 'clubes': {}})
+    league = {'atletas': {}, 'clubes': {}}
     for _round in rounds:
         positions = []
         patrimony = []

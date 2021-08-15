@@ -1,5 +1,43 @@
 "use strict";
 
+function render_top_row(player) {
+  return `
+  <tr>
+    <td class="text-center"><img class="img-thumbnail" src="${player['clube']['escudos']['45x45']}" alt="${player['clube']['nome']}" width="45" height="45"></td>
+    <td class="text-left"><img class="img-thumbnail" src="${player['foto'].replace('FORMATO', '50x50')}" alt="${player['apelido']}" width="45" height="45"> ${player['apelido']}</td>
+    <td class="text-center">${player['pontos'].toFixed(2)}</td>
+  </tr>
+  `;
+}
+
+function render_presence_row(player) {
+  return `
+  <tr>
+    <td class="text-center"><img class="img-thumbnail" src="${player['clube']['escudos']['45x45']}" alt="${player['clube']['nome']}" width="45" height="45"></td>
+    <td class="text-left"><img class="img-thumbnail" src="${player['foto'].replace('FORMATO', '50x50')}" alt="${player['apelido']}" width="45" height="45"> ${player['apelido']}</td>
+    <td class="text-center">${player['escalado']}</td>
+  </tr>
+  `;
+}
+
+function render_top_team_row(team) {
+  return `
+  <tr>
+    <td class="text-left"><img class="img-thumbnail" src="${team['escudos']['45x45']}" alt="${team['nome']}" width="45" height="45"> ${team['nome']}</td>
+    <td class="text-center">${team['pontos'].toFixed(2)}</td>
+  </tr>
+  `;
+}
+
+function render_presence_team_row(team) {
+  return `
+  <tr>
+    <td class="text-left"><img class="img-thumbnail" src="${team['escudos']['45x45']}" alt="${team['nome']}" width="45" height="45"> ${team['nome']}</td>
+    <td class="text-center">${team['escalado']}</td>
+  </tr>
+  `;
+}
+
 function render_highlight_card(data) {
   return `
   <div class="card text-center mt-3 mb-3">

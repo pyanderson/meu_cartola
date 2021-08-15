@@ -27,6 +27,9 @@
         <a class="nav-link" id="patrimony-tab-nav" data-toggle="tab" href="#patrimony-tab" role="tab" aria-controls="patrimony-tab" aria-selected="false">Patrimônio</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" id="top-tab-nav" data-toggle="tab" href="#top-tab" role="tab" aria-controls="top-tab" aria-selected="false">Top Mazé</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" id="highlights-tab-nav" data-toggle="tab" href="#highlights-tab" role="tab" aria-controls="highlights-tab" aria-selected="false">Destaques</a>
       </li>
       <li class="nav-item">
@@ -64,6 +67,81 @@
           </div>
         </div>
       </div>
+      <!-- top -->
+      <div class="tab-pane fade" id="top-tab" role="tabpanel" aria-labelledby="top-tab">
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Jogadores</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Top Pontuadores</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th>Clube</th>
+                    <th class="text-left">Nome</th>
+                    <th>Pontuação</th>
+                  </tr>
+                </thead>
+                <tbody id="top-points-table"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Mais Escalados</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th>Clube</th>
+                    <th class="text-left">Nome</th>
+                    <th>Escalado</th>
+                  </tr>
+                </thead>
+                <tbody id="top-presence-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Clubes</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Top Pontuadores</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th class="text-left">Clube</th>
+                    <th>Pontuação</th>
+                  </tr>
+                </thead>
+                <tbody id="top-team-points-table"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Mais Escalados</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th class="text-left">Clube</th>
+                    <th>Escalado</th>
+                  </tr>
+                </thead>
+                <tbody id="top-team-presence-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- highlights -->
       <div class="tab-pane fade" id="highlights-tab" role="tabpanel" aria-labelledby="highlights-tab">
         <div class="row">
@@ -77,14 +155,14 @@
                     <th>Nome</th>
                     <th>Melhor da Rodada</th>
                     <th>Pior da Rodada</th>
-                    <th>Maior Valorização da Rodada</th>
-                    <th>Pior Valorização da Rodada</th>
-                    <th>Gols</th>
-                    <th>Assistências</th>
-                    <th>Saldo de Gols</th>
-                    <th>Gols sofridos</th>
-                    <th>Cartões Amarelos</th>
-                    <th>Cartões Vemelhos</th>
+                    <th>Maior Valorização</th>
+                    <th>Pior Valorização</th>
+                    <th>G</th>
+                    <th>A</th>
+                    <th>SG</th>
+                    <th>GS</th>
+                    <th>CA</th>
+                    <th>CV</th>
                   </tr>
                 </thead>
                 <tbody id="highlights-table"></tbody>
@@ -192,6 +270,7 @@
     <script src="js/index.js"></script>
     <script src="js/render.js"></script>
     <script src="js/chart.js"></script>
+    <script src="js/top.js"></script>
     <script src="js/simulation.js"></script>
     <script src="js/best-teams.js"></script>
   </footer>

@@ -34,17 +34,13 @@ function load_league() {
       return response.json();
     })
     .then(function (teams) {
-      const items = [];
       const points = [];
       const positions = [];
       const patrimony = [];
-      for (const [name, data] of Object.entries(teams)) {
-        items.push([name, data])
-      }
       const cmp_by_points = function (a, b) {
         return a[1]['pontos'][a[1]['pontos'].length - 1] - b[1]['pontos'][b[1]['pontos'].length - 1];
       };
-      for (const [name, data] of items.sort(cmp_by_points).reverse()) {
+      for (const [name, data] of Object.entries(teams).sort(cmp_by_points).reverse()) {
         points.push({
           'x': data['rodadas'],
           'y': data['pontos'],
