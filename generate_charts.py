@@ -2,8 +2,8 @@ import os
 from operator import itemgetter
 
 # local imports
-from constants import (HIGHLIGHTS_PATH, PLAYERS_FOLDER_PATH, ROUNDS_PATH,
-                       SCHEMES_PATH, TEAMS_PATH)
+from constants import (HIGHLIGHTS_PATH, LEAGUE_STATS_PATH, PLAYERS_FOLDER_PATH,
+                       ROUNDS_PATH, SCHEMES_PATH, TEAMS_PATH)
 from helpers import read_json, write_json
 
 
@@ -22,13 +22,6 @@ def generate_highlights(teams):
     worst = max(teams.values(), key=itemgetter('pior_da_rodada'))
     rich = max(teams.values(), key=itemgetter('maior_valorização_da_rodada'))
     poor = max(teams.values(), key=itemgetter('pior_valorização_da_rodada'))
-    scouts = set()
-    for team in teams.values():
-        scouts.update(team['scout'].keys())
-    for team in teams.values():
-        for scout in scouts:
-            if scout not in team['scout']:
-                team['scout'][scout] = 0
     scorer = max(teams.values(), key=scout_getter('G'))
     waiter = max(teams.values(), key=scout_getter('A'))
     solid_defense = max(teams.values(), key=scout_getter('SG'))
@@ -113,9 +106,61 @@ def generate_highlights(teams):
     }
 
 
+def update_scouts(obj, player):
+    for key, value in player['scout'].items():
+        try:
+            obj['scout'][key] += value
+        except KeyError:
+            obj['scout'][key] = value
+    return obj
+
+
+def update_player_data(dest, _team, player):
+    actual = dest['atletas'].get(player['atleta_id'])
+    if actual is None:
+        actual = {'pontos': 0, 'scout': {}, 'escalado': 0}
+    actual['escalado'] += 1
+    actual['pontos'] += player['pontos_num']
+    actual['foto'] = player['foto']
+    actual['apelido'] = player['apelido']
+    actual['clube'] = _team
+    dest['atletas'][player['atleta_id']] = update_scouts(actual, player)
+
+
+def update_team_data(dest, _team, player):
+    actual = dest['clubes'].get(_team['id'])
+    if actual is None:
+        actual = {'pontos': 0, 'scout': {}, 'escalado': 0}
+    actual.update(_team)
+    actual['escalado'] += 1
+    actual['pontos'] += player['pontos_num']
+    dest['clubes'][_team['id']] = update_scouts(actual, player)
+
+
+def get_scouts(teams):
+    scouts = set()
+    for team in teams.values():
+        scouts.update(team['scout'].keys())
+    return scouts
+
+
+def set_missing_scouts(obj, scouts):
+    for scout in scouts:
+        if scout not in obj['scout']:
+            obj['scout'][scout] = 0
+    return obj
+
+
+def add_missing_scouts(dest, scouts):
+    for key, value in dest.items():
+        dest[key] = set_missing_scouts(value, scouts)
+    return dest
+
+
 def generate_teams_data():
     rounds = read_json(ROUNDS_PATH, [])
     teams = {}
+    league = read_json(LEAGUE_STATS_PATH, {'atletas': {}, 'clubes': {}})
     for _round in rounds:
         positions = []
         patrimony = []
@@ -143,14 +188,22 @@ def generate_teams_data():
                     'pior_da_rodada': 0,
                     'maior_valorização_da_rodada': 0,
                     'pior_valorização_da_rodada': 0,
-                    'scout': {}
+                    'scout': {},
+                    'atletas': {},
+                    'clubes': {},
                 }
             for player in team['atletas']:
-                for key, value in player['scout'].items():
-                    try:
-                        teams[name]['scout'][key] += value
-                    except KeyError:
-                        teams[name]['scout'][key] = value
+                teams[name] = update_scouts(teams[name], player)
+                try:
+                    _team = team['clubes'][str(player['clube_id'])]
+                except KeyError:
+                    _team = {'id': player['clube_id'], 'nome': 'Sem Clube'}
+                if team['capitao_id'] == player['atleta_id']:
+                    player['pontos_num'] *= 2
+                update_player_data(league, _team, player)
+                update_player_data(teams[name], _team, player)
+                update_team_data(league, _team, player)
+                update_team_data(teams[name], _team, player)
             positions.append((name, teams[name]['total']))
             patrimony.append((name, teams[name]['valorizacao'][-1]))
         rank(positions, 'posicoes', teams)
@@ -161,9 +214,16 @@ def generate_teams_data():
         patrimony = sorted(patrimony, key=itemgetter(1))
         teams[patrimony[-1][0]]['maior_valorização_da_rodada'] += 1
         teams[patrimony[0][0]]['pior_valorização_da_rodada'] += 1
+    scouts = get_scouts(teams)
+    league['atletas'] = add_missing_scouts(league['atletas'], scouts)
+    league['clubes'] = add_missing_scouts(league['clubes'], scouts)
+    teams = add_missing_scouts(teams, scouts)
+    for team in teams.values():
+        team['atletas'] = add_missing_scouts(team['atletas'], scouts)
     highlights = generate_highlights(teams)
     write_json(TEAMS_PATH, teams)
     write_json(HIGHLIGHTS_PATH, highlights)
+    write_json(LEAGUE_STATS_PATH, league)
     return teams
 
 

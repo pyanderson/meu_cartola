@@ -11,7 +11,7 @@ function load_highlights() {
         data['title'] = name.split('_').join(' ');
       }
       for (const data of Object.values(highlights).sort(function (x, y) {
-        return x['pos'] - y ['pos'];
+        return x['pos'] - y['pos'];
       })) {
         deck.push(data);
         if (deck.length % 4 == 0) {
@@ -34,10 +34,17 @@ function load_league() {
       return response.json();
     })
     .then(function (teams) {
+      const items = [];
       const points = [];
       const positions = [];
       const patrimony = [];
       for (const [name, data] of Object.entries(teams)) {
+        items.push([name, data])
+      }
+      const cmp_by_points = function (a, b) {
+        return a[1]['pontos'][a[1]['pontos'].length - 1] - b[1]['pontos'][b[1]['pontos'].length - 1];
+      };
+      for (const [name, data] of items.sort(cmp_by_points).reverse()) {
         points.push({
           'x': data['rodadas'],
           'y': data['pontos'],
@@ -86,7 +93,7 @@ function load_league() {
     });
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
   load_league();
   load_highlights();
 });
