@@ -7,7 +7,7 @@ import requests
 
 # local imports
 from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH,
-                       PLAYERS_HISTOTY_PATH, PLAYERS_PATH, ROUNDS_PATH,
+                       PLAYERS_HISTORY_PATH, PLAYERS_PATH, ROUNDS_PATH,
                        SHIELDS_PATH)
 from helpers import read_json, write_json
 
@@ -86,16 +86,18 @@ def get_player_round(history, round_id):
 
 def download_players_history(glb_tag, token):
     market = fetch('mercado/status')
-    players_history = read_json(PLAYERS_HISTOTY_PATH, {})
+    players_history = read_json(PLAYERS_HISTORY_PATH, {})
     for i in range(1, market['rodada_atual']):
         path = PLAYERS_PATH.replace('x', str(i))
         players = read_json(path)
         if players is None:
             players = fetch(f'atletas/pontuados/{i}')
         for _id, player in players['atletas'].items():
-            _round = get_player_round(players_history.get(_id), i)
+            player_history = players_history.get(_id)
+            _round = get_player_round(player_history, i)
             if _round is None or _round['preco'] is None:
-                players_history[_id] = fetch_player(glb_tag, token, _id)
+                if i == market['rodada_atual'] - 1 or player_history is None:
+                    players_history[_id] = fetch_player(glb_tag, token, _id)
                 _round = get_player_round(players_history.get(_id), i)
                 if _round is None or _round['preco'] is None:
                     continue
@@ -104,7 +106,7 @@ def download_players_history(glb_tag, token):
             )
             player.update(_round)
         write_json(path, players)
-    write_json(PLAYERS_HISTOTY_PATH, players_history)
+    write_json(PLAYERS_HISTORY_PATH, players_history)
 
 
 if __name__ == '__main__':
