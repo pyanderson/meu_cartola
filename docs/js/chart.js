@@ -1,5 +1,18 @@
 "use strict";
 
+function top_n(ls, cmp = 'points', n = 5) {
+  const cmp_by_points = function (a, b) {
+    return a['pontos'] - b['pontos'];
+  };
+  const cmp_by_presence = function (a, b) {
+    return a['escalado'] - b['escalado'];
+  };
+  if (cmp == 'points')
+    return ls.sort(cmp_by_points).reverse().slice(0, n);
+  return ls.sort(cmp_by_presence).reverse().slice(0, n);
+}
+
+
 function load_highlights() {
   fetch(`https://${host}/data/destaques.json`)
     .then(function (response) {
@@ -26,6 +39,21 @@ function load_highlights() {
     .catch(function (err) {
       console.log(err);
     });
+}
+
+function load_team_top_n(team) {
+  $('#top-player-players').html(
+    render_top_players(
+      top_n(Object.values(team['atletas'])),
+      top_n(Object.values(team['atletas']), 'presence')
+    )
+  )
+  $('#top-player-teams').html(
+    render_top_teams(
+      top_n(Object.values(team['clubes'])),
+      top_n(Object.values(team['clubes']), 'presence')
+    )
+  )
 }
 
 function load_league() {
@@ -57,7 +85,14 @@ function load_league() {
           'name': name
         });
         $('#highlights-table').append(render_highlight_row(name, data));
+        $('#team-select').append(render_team_option(name));
       }
+
+      $('#team-select').change(function () {
+        load_team_top_n(teams[$('#team-select').val()]);
+      });
+      load_team_top_n(teams[$('#team-select').val()]);
+
       const cmp = function (a, b) {
         return a['y'][a['y'].length - 1] - b['y'][b['y'].length - 1]
       }

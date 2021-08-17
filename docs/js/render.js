@@ -1,6 +1,6 @@
 "use strict";
 
-function render_top_row(player) {
+function render_top_player_row(player) {
   return `
   <tr>
     <td class="text-center"><img class="img-thumbnail" src="${player['clube']['escudos']['45x45']}" alt="${player['clube']['nome']}" width="45" height="45"></td>
@@ -10,13 +10,61 @@ function render_top_row(player) {
   `;
 }
 
-function render_presence_row(player) {
+function render_presence_player_row(player) {
   return `
   <tr>
     <td class="text-center"><img class="img-thumbnail" src="${player['clube']['escudos']['45x45']}" alt="${player['clube']['nome']}" width="45" height="45"></td>
     <td class="text-left"><img class="img-thumbnail" src="${player['foto'].replace('FORMATO', '50x50')}" alt="${player['apelido']}" width="45" height="45"> ${player['apelido']}</td>
     <td class="text-center">${player['escalado']}</td>
   </tr>
+  `;
+}
+
+function render_top_players(players_by_points, players_by_presence) {
+  const points_rows = players_by_points.reduce(function (rows, player) {
+    return rows += render_top_player_row(player);
+  }, '');
+  const presence_rows = players_by_presence.reduce(function (rows, player) {
+    return rows += render_presence_player_row(player);
+  }, '');
+  return `
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Jogadores</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Top Pontuadores</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th>Clube</th>
+                    <th class="text-left">Nome</th>
+                    <th>Pontuação</th>
+                  </tr>
+                </thead>
+                <tbody>${points_rows}</tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Mais Escalados</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th>Clube</th>
+                    <th class="text-left">Nome</th>
+                    <th>Escalado</th>
+                  </tr>
+                </thead>
+                <tbody>${presence_rows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
   `;
 }
 
@@ -38,6 +86,56 @@ function render_presence_team_row(team) {
   `;
 }
 
+function render_top_teams(teams_by_points, teams_by_presence) {
+  const points_rows = teams_by_points.reduce(function (rows, team) {
+    return rows += render_top_team_row(team);
+  }, '');
+  const presence_rows = teams_by_presence.reduce(function (rows, team) {
+    return rows += render_presence_team_row(team);
+  }, '');
+  return `
+        <div class="row">
+          <div class="col-sm-12 mt-3">
+            <h3 class="text-center">Clubes</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Top Pontuadores</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th class="text-left">Clube</th>
+                    <th>Pontuação</th>
+                  </tr>
+                </thead>
+                <tbody>${points_rows}</tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-6 mt-3">
+            <h5 class="text-center">Mais Escalados</h5>
+            <div class="table-responsive mt-3">
+              <table class="table table-striped table-hover">
+                <thead class="text-center">
+                  <tr>
+                    <th class="text-left">Clube</th>
+                    <th>Escalado</th>
+                  </tr>
+                </thead>
+                <tbody>${presence_rows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  `;
+}
+
+function render_team_option(name) {
+  return `<option value="${name}">${name}</option>`
+}
+
 function render_highlight_card(data) {
   return `
   <div class="card text-center mt-3 mb-3">
@@ -52,7 +150,7 @@ function render_highlight_card(data) {
 }
 
 function render_highlight_card_deck(highlights) {
-  const content = highlights.reduce(function (value, data){
+  const content = highlights.reduce(function (value, data) {
     return value + render_highlight_card(data);
   }, '')
   return `
@@ -140,7 +238,7 @@ function render_action_button(btn, cls, value, symbol) {
 }
 
 function render_player_card(player) {
-  const pos = positions[player['posicao_id']-1];
+  const pos = positions[player['posicao_id'] - 1];
   return `
   <div class="card text-center${player['capitao'] ? ' bg-info' : ''}">
     <div class="card-body">
@@ -203,7 +301,7 @@ function render_best_team(team) {
     } else if (players.length == 4) {
       players.splice(2, 0, 'empty');
     }
-    const divs = players.reduce(function(value, player) {
+    const divs = players.reduce(function (value, player) {
       if (player == 'empty') {
         return value + '<div class="col-sm-2 mt-2 mb-2"></div>';
       }
