@@ -2,8 +2,9 @@ import os
 from operator import itemgetter
 
 # local imports
-from constants import (HIGHLIGHTS_PATH, LEAGUE_STATS_PATH, PLAYERS_FOLDER_PATH,
-                       ROUNDS_PATH, SCHEMES_PATH, TEAMS_PATH)
+from constants import (EMPTY_TEAM_SHIELD, HIGHLIGHTS_PATH, LEAGUE_STATS_PATH,
+                       PLAYERS_FOLDER_PATH, ROUNDS_PATH, SCHEMES_PATH,
+                       TEAMS_PATH)
 from helpers import read_json, write_json
 
 
@@ -197,7 +198,14 @@ def generate_teams_data():
                 try:
                     _team = team['clubes'][str(player['clube_id'])]
                 except KeyError:
-                    _team = {'id': player['clube_id'], 'nome': 'Sem Clube'}
+                    _team = {
+                        'id': player['clube_id'],
+                        'nome': 'Sem Clube',
+                        'escudos': {
+                            '30x30': EMPTY_TEAM_SHIELD,
+                            '45x45': EMPTY_TEAM_SHIELD,
+                        },
+                    }
                 if team['capitao_id'] == player['atleta_id']:
                     player['pontos_num'] *= 2
                 update_player_data(league, _team, player)

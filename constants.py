@@ -13,3 +13,5 @@ SCHEMES_PATH = os.path.join(DOCS_PATH, 'esquemas.json')
 SHIELDS_PATH = os.path.join(DOCS_PATH, 'escudos')
 PLAYERS_FOLDER_PATH = os.path.join(DOCS_PATH, 'atletas')
 PLAYERS_PATH = os.path.join(PLAYERS_FOLDER_PATH, 'rodada-x.json')
+
+EMPTY_TEAM_SHIELD = 'https://cartolafc.globo.com/dist/6.11.1/img/emptystate_escudo.svg'  # noqa
