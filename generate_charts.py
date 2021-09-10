@@ -56,7 +56,7 @@ def generate_highlights(teams):
             'desc': 'vezes',
             'pos': 3
         },
-        'goleador': {
+        'artilheiro': {
             'nome': scorer['nome'],
             'total': scorer['scout']['G'],
             'desc': 'gols',
@@ -86,7 +86,7 @@ def generate_highlights(teams):
             'desc': 'gols',
             'pos': 8
         },
-        'joga_limpo': {
+        'fair_player': {
             'nome': fair_player['nome'],
             'total': fair_player['scout']['CV'],
             'desc': 'cartões vermelhos',
