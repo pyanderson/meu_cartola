@@ -21,8 +21,8 @@ def scout_getter(key):
 def generate_highlights(teams):
     best = max(teams.values(), key=itemgetter('melhor_da_rodada'))
     worst = max(teams.values(), key=itemgetter('pior_da_rodada'))
-    rich = max(teams.values(), key=itemgetter('maior_valorização_da_rodada'))
-    poor = max(teams.values(), key=itemgetter('pior_valorização_da_rodada'))
+    rich = max(teams.values(), key=itemgetter('maior_valorização'))
+    poor = max(teams.values(), key=itemgetter('pior_valorização'))
     scorer = max(teams.values(), key=scout_getter('G'))
     waiter = max(teams.values(), key=scout_getter('A'))
     solid_defense = max(teams.values(), key=scout_getter('SG'))
@@ -44,15 +44,15 @@ def generate_highlights(teams):
             'desc': 'vezes',
             'pos': 1
         },
-        'maior_valorização_da_rodada': {
+        'maior_valorização': {
             'nome': rich['nome'],
-            'total': rich['maior_valorização_da_rodada'],
+            'total': rich['maior_valorização'],
             'desc': 'vezes',
             'pos': 2
         },
-        'pior_valorização_da_rodada': {
+        'pior_valorização': {
             'nome': poor['nome'],
-            'total': poor['pior_valorização_da_rodada'],
+            'total': poor['pior_valorização'],
             'desc': 'vezes',
             'pos': 3
         },
@@ -74,7 +74,7 @@ def generate_highlights(teams):
             'desc': 'SG garantidos',
             'pos': 6
         },
-        'passa_tudo': {
+        'chutou_é_gol': {
             'nome': inverse_scorer['nome'],
             'total': inverse_scorer['scout']['GS'],
             'desc': 'gols sofridos',
@@ -187,8 +187,8 @@ def generate_teams_data():
                     'valorizacao': [team['patrimonio'] - 100],
                     'melhor_da_rodada': 0,
                     'pior_da_rodada': 0,
-                    'maior_valorização_da_rodada': 0,
-                    'pior_valorização_da_rodada': 0,
+                    'maior_valorização': 0,
+                    'pior_valorização': 0,
                     'scout': {},
                     'atletas': {},
                     'clubes': {},
@@ -220,8 +220,8 @@ def generate_teams_data():
         team = min(_round, key=itemgetter('pontos'))
         teams[team['time']['nome']]['pior_da_rodada'] += 1
         patrimony = sorted(patrimony, key=itemgetter(1))
-        teams[patrimony[-1][0]]['maior_valorização_da_rodada'] += 1
-        teams[patrimony[0][0]]['pior_valorização_da_rodada'] += 1
+        teams[patrimony[-1][0]]['maior_valorização'] += 1
+        teams[patrimony[0][0]]['pior_valorização'] += 1
     scouts = get_scouts(teams)
     league['atletas'] = add_missing_scouts(league['atletas'], scouts)
     league['clubes'] = add_missing_scouts(league['clubes'], scouts)
