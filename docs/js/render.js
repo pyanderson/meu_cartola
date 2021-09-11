@@ -244,10 +244,10 @@ function render_player_card(player) {
   <div class="card text-center${player['capitao'] ? ' bg-info' : ''}">
     <div class="card-body">
       <span class="card-text badge badge-primary text-uppercase">${pos}</span>
-      <p class="card-text">${player['apelido']}</p>
-      <p class="card-text">${player['pontos'].toFixed(2)}</p>
+      <img class="mt-1 mb-1" src="${player['foto'].replace('FORMATO', '50x50')}" alt="${player['apelido']}" data-toggle="tooltip" title="${player['apelido']}" data-placement="bottom" width="45" height="45">
+      <p class="card-text small">${player['pontos'].toFixed(2)}</p>
     </div>
-    <div class="card-footer">$ ${player['preco_anterior'].toFixed(2)}</div>
+    <div class="card-footer small">$ ${player['preco_anterior'].toFixed(2)}</div>
   </div>
   `;
 }
@@ -282,13 +282,15 @@ function render_best_team_header(team) {
 }
 
 function render_best_team(team) {
-  const ids = [1, 3, 2, 4, 5, 6];
+  const ids = [5, 4, 2, 3, 1, 6];
   const field = ids.reduce(function (content, id) {
     const players = team['jogadores'].filter(function (player) {
       return player['posicao_id'] == id;
     });
     if (id == 2) {
       players.splice(1, 0, 'empty', 'empty', 'empty');
+    } else if (id == 6) {
+      players.push('empty', 'empty', 'empty', 'empty');
     } else if (players.length == 1) {
       players.unshift('empty', 'empty');
       players.push('empty', 'empty');

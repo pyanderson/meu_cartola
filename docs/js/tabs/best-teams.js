@@ -10,6 +10,7 @@ function load_best_round(round) {
       user_data['best-teams'].forEach(function (team) {
         $("#best").append(render_best_team(team));
       });
+      $('[data-toggle="tooltip"]').tooltip(); 
     })
     .catch(function (err) {
       console.log(err);
