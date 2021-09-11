@@ -125,6 +125,7 @@ def update_player_data(dest, _team, player):
     actual['foto'] = player['foto']
     actual['apelido'] = player['apelido']
     actual['clube'] = _team
+    actual['posicao_id'] = player['posicao_id']
     dest['atletas'][player['atleta_id']] = update_scouts(actual, player)
 
 
@@ -158,6 +159,61 @@ def add_missing_scouts(dest, scouts):
     return dest
 
 
+def new_team(team):
+    return {
+        'nome': team['time']['nome'],
+        'total': team['pontos'],
+        'rodadas': [0, team['rodada_atual']],
+        'pontos': [0, team['pontos']],
+        'posicoes': [],
+        'patrimonio': [100, team['patrimonio']],
+        'valorizacao': [team['patrimonio'] - 100],
+        'melhor_da_rodada': 0,
+        'pior_da_rodada': 0,
+        'maior_valorização': 0,
+        'pior_valorização': 0,
+        'scout': {},
+        'atletas': {},
+        'clubes': {},
+    }
+
+
+def add_round(team, _round):
+    team['total'] = team['total'] + _round['pontos']
+    team['rodadas'].append(_round['rodada_atual'])
+    team['pontos'].append(team['total'])
+    team['valorizacao'].append(_round['patrimonio'] - team['patrimonio'][-1])
+    team['patrimonio'].append(_round['patrimonio'])
+    return team
+
+
+def empty_team(_id):
+    return {
+        'id': _id,
+        'nome': 'Sem Clube',
+        'escudos': {'30x30': EMPTY_TEAM_SHIELD, '45x45': EMPTY_TEAM_SHIELD},
+    }
+
+
+def calc_sectors(team):
+    team['defesa'] = {'total': 0, 'media': 0, 'escalados': 0}
+    team['meio_campo'] = {'total': 0, 'media': 0, 'escalados': 0}
+    team['ataque'] = {'total': 0, 'media': 0, 'escalados': 0}
+    team['técnico'] = {'total': 0, 'media': 0, 'escalados': 0}
+    for player in team['atletas'].values():
+        if player['posicao_id'] in [1, 2, 3]:
+            key = 'defesa'
+        elif player['posicao_id'] == 4:
+            key = 'meio_campo'
+        elif player['posicao_id'] == 5:
+            key = 'ataque'
+        else:
+            key = 'técnico'
+        team[key]['total'] += player['pontos']
+        team[key]['escalados'] += player['escalado']
+        team[key]['media'] = team[key]['total'] / team[key]['escalados']
+
+
 def generate_teams_data():
     rounds = read_json(ROUNDS_PATH, [])
     teams = {}
@@ -169,43 +225,15 @@ def generate_teams_data():
             name = team['time']['nome']
             team['pontos'] = team['pontos'] or 0
             try:
-                teams[name]['total'] = teams[name]['total'] + team['pontos']
-                teams[name]['rodadas'].append(team['rodada_atual'])
-                teams[name]['pontos'].append(teams[name]['total'])
-                teams[name]['valorizacao'].append(
-                    team['patrimonio'] - teams[name]['patrimonio'][-1]
-                )
-                teams[name]['patrimonio'].append(team['patrimonio'])
+                teams[name] = add_round(teams[name], team)
             except KeyError:
-                teams[name] = {
-                    'nome': name,
-                    'total': team['pontos'],
-                    'rodadas': [0, team['rodada_atual']],
-                    'pontos': [0, team['pontos']],
-                    'posicoes': [],
-                    'patrimonio': [100, team['patrimonio']],
-                    'valorizacao': [team['patrimonio'] - 100],
-                    'melhor_da_rodada': 0,
-                    'pior_da_rodada': 0,
-                    'maior_valorização': 0,
-                    'pior_valorização': 0,
-                    'scout': {},
-                    'atletas': {},
-                    'clubes': {},
-                }
+                teams[name] = new_team(team)
             for player in team['atletas']:
                 teams[name] = update_scouts(teams[name], player)
                 try:
                     _team = team['clubes'][str(player['clube_id'])]
                 except KeyError:
-                    _team = {
-                        'id': player['clube_id'],
-                        'nome': 'Sem Clube',
-                        'escudos': {
-                            '30x30': EMPTY_TEAM_SHIELD,
-                            '45x45': EMPTY_TEAM_SHIELD,
-                        },
-                    }
+                    _team = empty_team(player['clube_id'])
                 if team['capitao_id'] == player['atleta_id']:
                     player['pontos_num'] *= 2
                 update_player_data(league, _team, player)
@@ -228,6 +256,8 @@ def generate_teams_data():
     teams = add_missing_scouts(teams, scouts)
     for team in teams.values():
         team['atletas'] = add_missing_scouts(team['atletas'], scouts)
+        calc_sectors(team)
+    calc_sectors(league)
     highlights = generate_highlights(teams)
     write_json(TEAMS_PATH, teams)
     write_json(HIGHLIGHTS_PATH, highlights)
