@@ -18,7 +18,7 @@
   <div class="container">
     <ul class="nav nav-tabs" id="main-tab-nav" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="points-tabi-nav" data-toggle="tab" href="#points-tab" role="tab" aria-controls="points-tab" aria-selected="true">Pontuação</a>
+        <a class="nav-link active" id="points-tab-nav" data-toggle="tab" href="#points-tab" role="tab" aria-controls="points-tab" aria-selected="true">Pontuação</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="positions-tab-nav" data-toggle="tab" href="#positions-tab" role="tab" aria-controls="positions-tab" aria-selected="false">Posições</a>
@@ -99,7 +99,7 @@
               <table class="table table-striped table-hover">
                 <thead class="text-center">
                   <tr>
-                    <th>Nome</th>
+                    <th colspan="2">Nome</th>
                     <th>Melhor da Rodada</th>
                     <th>Pior da Rodada</th>
                     <th>Maior Valorização</th>
@@ -214,12 +214,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.2.1.min.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/load.js"></script>
     <script src="js/render.js"></script>
-    <script src="js/chart.js"></script>
-    <script src="js/top.js"></script>
-    <script src="js/simulation.js"></script>
-    <script src="js/best-teams.js"></script>
+    <script src="js/tabs/points.js"></script>
+    <script src="js/tabs/positions.js"></script>
+    <script src="js/tabs/patrimony.js"></script>
+    <script src="js/tabs/top.js"></script>
+    <script src="js/tabs/highlights.js"></script>
+    <script src="js/tabs/simulation.js"></script>
+    <script src="js/tabs/best-teams.js"></script>
+    <script src="js/index.js"></script>
   </footer>
 </body>
 </html>

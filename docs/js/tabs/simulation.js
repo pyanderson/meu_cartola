@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 function load_scheme() {
-  const scheme = user_data['schemes'][$('#scheme').val()];
+  const scheme = db.schemes[$('#scheme').val()];
   user_data['selected_scheme'] = scheme;
   reset_team_stats();
   $('#team-table').html('');
@@ -17,23 +17,16 @@ function load_scheme() {
 }
 
 function load_schemes() {
-  fetch(`https://${host}/data/esquemas.json`)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (schemes) {
-      user_data['schemes'] = schemes.toObject('esquema_id');
-      schemes.forEach(function (scheme) {
+  fetch_schemes()
+    .then(function () {
+      Object.values(db.schemes).forEach(function (scheme) {
         $('select[name="scheme"]').append(`<option value="${scheme['esquema_id']}">${scheme['nome']}</option>`);
       });
       load_scheme();
       // events
-      $('#scheme').change(function() {
+      $('#scheme').change(function () {
         load_scheme();
       });
-    })
-    .catch(function (err) {
-      console.log(err);
     });
 }
 
@@ -49,7 +42,7 @@ function refresh_players_table() {
       action[pos] = 'show'
     }
   });
-  Object.values($('td[name="position"]')).forEach(function(element) {
+  Object.values($('td[name="position"]')).forEach(function (element) {
     const td = $(element);
     const tr = td.parent();
     const pos = td.text()
@@ -82,7 +75,7 @@ function update_team_stats() {
 
 function remove_player(id) {
   const player = user_data['players']['atletas'][id];
-  const pos = positions[player['posicao_id']-1];
+  const pos = positions[player['posicao_id'] - 1];
   for (const [tr_id, cur_player] of Object.entries(user_data['team'][pos])) {
     if (cur_player['id'] == player['id']) {
       $('#' + tr_id).html(render_team_table_empty_content(pos));
@@ -128,7 +121,7 @@ function remove_captain(id) {
 function add_player(id) {
   const player = user_data['players']['atletas'][id];
   const player_team = user_data['players']['clubes'][player['clube_id']];
-  const pos = positions[player['posicao_id']-1];
+  const pos = positions[player['posicao_id'] - 1];
   for (const [tr_id, space] of Object.entries(user_data['team'][pos])) {
     if (space == 'empty') {
       $('#' + tr_id).html(render_team_table_content(pos, player, player_team));
@@ -142,7 +135,7 @@ function add_player(id) {
       update_team_stats();
 
       // events
-      $('button[name="team-player-button"]').on('click', function(event) {
+      $('button[name="team-player-button"]').on('click', function (event) {
         event.preventDefault();
         const btn = $(this);
         const id = btn.attr('id').split('team-player-button-')[1];
@@ -153,7 +146,7 @@ function add_player(id) {
       if (pos == 'tec') {
         $(`#team-captain-button-${player['id']}`).remove();
       } else {
-        $('button[name="team-captain-button"]').on('click', function(event) {
+        $('button[name="team-captain-button"]').on('click', function (event) {
           event.preventDefault();
           const btn = $(this);
           const id = btn.attr('id').split('team-captain-button-')[1];
@@ -175,16 +168,16 @@ function add_player(id) {
 }
 
 function load_players_table() {
-  const valid_players = Object.entries(user_data['players']['atletas']).map(function (tuple){
-      tuple[1]['id'] = tuple[0];
-      return tuple[1];
-    })
+  const valid_players = Object.entries(user_data['players']['atletas']).map(function (tuple) {
+    tuple[1]['id'] = tuple[0];
+    return tuple[1];
+  })
     .filter(function (player) {
       return player['entrou_em_campo'];
     });
   const players_grouped = {};
   valid_players.forEach(function (player) {
-    const key = positions[player['posicao_id']-1];
+    const key = positions[player['posicao_id'] - 1];
     if (!(key in players_grouped)) {
       players_grouped[key] = [];
     }
@@ -202,7 +195,7 @@ function load_players_table() {
 
   refresh_players_table();
 
-  $('button[name="player-button"]').on('click', function(event) {
+  $('button[name="player-button"]').on('click', function (event) {
     event.preventDefault();
     const btn = $(this);
     const id = btn.attr('id').split('player-button-')[1];
@@ -219,25 +212,19 @@ function load_players_table() {
 }
 
 function load_round(round) {
-  fetch(`https://${host}/data/atletas/rodada-${round}.json`)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (players) {
+  fetch_round(round)
+    .then(function () {
       user_data['round'] = round;
-      user_data['players'] = players;
+      user_data['players'] = db.rounds[round];
       load_players_table();
       reset_team_stats();
-      $('#players-search').on('keyup', function() {
+      $('#players-search').on('keyup', function () {
         const value = $(this).val().toLowerCase();
-        $('#players-table tr').filter(function() {
+        $('#players-table tr').filter(function () {
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
       });
     })
-    .catch(function (err) {
-      console.log(err);
-    });
 }
 
 function add_round_options() {
@@ -245,14 +232,17 @@ function add_round_options() {
     $('select[name="round"]').append(`<option value="${i}">Rodada ${i}</option>`);
   }
   // events
-  $('#round').change(function() {
+  $('#round').change(function () {
     load_round($(this).val());
   });
 
   load_round(actual_round);
 }
 
-$(document).ready(function() {
+function render_simulation_tab() {
+  const state_id = 'simulation_tab';
+  if (state[state_id] == 'done') return;
   load_schemes();
   add_round_options();
-});
+  state[state_id] = 'done';
+}

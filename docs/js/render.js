@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 function render_top_player_row(player) {
   return `
@@ -139,12 +139,12 @@ function render_team_option(name) {
 function render_highlight_card(data) {
   return `
   <div class="card text-center mt-3 mb-3">
-    <div class="card-header text-capitalize">${data['title']}</div>
+    <div class="card-header text-capitalize small">${data['title']}</div>
     <img class="card-img-top" src="data/escudos/${data['nome']}.png" alt="${data['nome']}">
     <div class="card-body">
-      <h4 class="card-title">${data['nome']}</h4>
+      <h4 class="card-title small">${data['nome']}</h4>
     </div>
-    <div class="card-footer">${data['total']} ${data['desc']}</div>
+    <div class="card-footer small">${data['total']} ${data['desc']}</div>
   </div>
     `;
 }
@@ -163,11 +163,12 @@ function render_highlight_card_deck(highlights) {
 function render_highlight_row(name, data) {
   return `
   <tr>
-    <td><img class="img-thumbnail" src="data/escudos/${name}.png" alt="${name}" width="50" height="53"> ${name}</td>
+    <td><img class="img-thumbnail" src="data/escudos/${name}.png" alt="${name}" width="50" height="53"></td>
+    <td>${name}</td>
     <td class="text-center">${data['melhor_da_rodada']}</td>
     <td class="text-center">${data['pior_da_rodada']}</td>
-    <td class="text-center">${data['maior_valorização_da_rodada']}</td>
-    <td class="text-center">${data['pior_valorização_da_rodada']}</td>
+    <td class="text-center">${data['maior_valorização']}</td>
+    <td class="text-center">${data['pior_valorização']}</td>
     <td class="text-center">${data['scout']['G']}</td>
     <td class="text-center">${data['scout']['A']}</td>
     <td class="text-center">${data['scout']['SG']}</td>
