@@ -1,5 +1,23 @@
 'use strict';
 
+function find_max_by_sector(key) {
+  return Object.values(db.teams).reduce(function (a, b) {
+    if (a[key]['total'] == b[key]['total']) {
+      return a[key]['media'] > b[key]['media'] ? a : b;
+    }
+    return a[key]['total'] > b[key]['total'] ? a : b;
+  });
+}
+
+function find_min_by_sector(key) {
+  return Object.values(db.teams).reduce(function (a, b) {
+    if (a[key]['total'] == b[key]['total']) {
+      return a[key]['media'] < b[key]['media'] ? a : b;
+    }
+    return a[key]['total'] < b[key]['total'] ? a : b;
+  });
+}
+
 function render_highlights_tab() {
   const state_id = 'highlights_tab';
   if (state[state_id] == 'done') return;
@@ -30,5 +48,15 @@ function render_highlights_tab() {
       for (const [name, data] of Object.entries(db.teams).sort(cmp_by_points).reverse()) {
         $('#highlights-table').append(render_highlight_row(name, data));
       }
+    });
+  fetch_teams()
+    .then(function () {
+      const defense = find_max_by_sector('defesa');
+      const middle = find_max_by_sector('meio_campo');
+      const attack = find_max_by_sector('ataque');
+      const worst_defense = find_min_by_sector('defesa');
+      const worst_middle = find_min_by_sector('meio_campo');
+      const worst_attack = find_min_by_sector('ataque');
+      $("#sectors").append(render_sectors_card_deck(defense, middle, attack, worst_defense, worst_middle, worst_attack));
     });
 }

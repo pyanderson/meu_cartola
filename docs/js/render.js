@@ -160,6 +160,32 @@ function render_highlight_card_deck(highlights) {
   `;
 }
 
+function render_sector_card(title, data, sector, bg) {
+  return `
+    <div class="card text-center mt-3 mb-3">
+      <div class="card-header text-capitalize small bg-${bg}">${title}</div>
+      <img class="card-img-top" src="data/escudos/${data['nome']}.png" alt="${data['nome']}">
+      <div class="card-body">
+        <h4 class="card-title small">${data['nome']}</h4>
+      </div>
+      <div class="card-footer small">Total: ${data[sector]['total'].toFixed(2)} Média: ${data[sector]['media'].toFixed(2)}</div>
+    </div>
+  `;
+}
+
+function render_sectors_card_deck(defense, middle, attack, worst_defense, worst_middle, worst_attack) {
+  return `
+  <div class="card-deck">
+  ${render_sector_card('Defesa', defense, 'defesa', 'info')}
+  ${render_sector_card('Meio Campo', middle, 'meio_campo', 'info')}
+  ${render_sector_card('Ataque', attack, 'ataque', 'info')}
+  ${render_sector_card('Defesa', worst_defense, 'defesa', 'success')}
+  ${render_sector_card('Meio Campo', worst_middle, 'meio_campo', 'success')}
+  ${render_sector_card('Ataque', worst_attack, 'ataque', 'success')}
+  </div>
+  `;
+}
+
 function render_highlight_row(name, data) {
   return `
   <tr>
