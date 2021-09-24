@@ -218,6 +218,7 @@ def generate_teams_data():
     rounds = read_json(ROUNDS_PATH, [])
     teams = {}
     league = {'atletas': {}, 'clubes': {}}
+    clubs = {'1': empty_team(1)}
     for _round in rounds:
         positions = []
         patrimony = []
@@ -230,10 +231,8 @@ def generate_teams_data():
                 teams[name] = new_team(team)
             for player in team['atletas']:
                 teams[name] = update_scouts(teams[name], player)
-                try:
-                    _team = team['clubes'][str(player['clube_id'])]
-                except KeyError:
-                    _team = empty_team(player['clube_id'])
+                clubs.update(team.get('clubes', {}))
+                _team = clubs[str(player['clube_id'])]
                 if team['capitao_id'] == player['atleta_id']:
                     player['pontos_num'] *= 2
                 update_player_data(league, _team, player)
