@@ -1,7 +1,7 @@
 'use strict';
 
 const host = window.location.host == '' ? 'meucartola.pyanderson.dev' : window.location.host;
-const actual_round = 22;
+const actual_round = 23;
 const user_data = {'team': {}};
 const db = {'rounds': {}, 'best_rounds': {}};
 const state = {};
