@@ -270,6 +270,9 @@ def generate_schemes_best():
     for filename in os.listdir(PLAYERS_FOLDER_PATH):
         round_path = os.path.join(PLAYERS_FOLDER_PATH, filename)
         players = read_json(round_path)['atletas']
+        for player in players.values():
+            if 'pontos' not in player:
+                player['pontos'] = 0
         teams = []
         for scheme in schemes:
             team = {
