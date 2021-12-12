@@ -55,8 +55,9 @@ def download_league_data(league_slug, glb_tag, token):
     rounds = read_json(ROUNDS_PATH, [])
     market = fetch('mercado/status')
     league = fetch(f'auth/liga/{league_slug}', glb_tag, token)
+    limit = 39 if market['game_over'] else market['rodada_atual']
     # only search the missing rounds
-    for i in range(len(rounds) + 1, market['rodada_atual']):
+    for i in range(len(rounds) + 1, limit):
         rounds.append(get_round(i, league['times']))
     # download the shields
     for team in rounds[-1]:
@@ -87,11 +88,15 @@ def get_player_round(history, round_id):
 def download_players_history(glb_tag, token):
     market = fetch('mercado/status')
     players_history = read_json(PLAYERS_HISTORY_PATH, {})
-    for i in range(1, market['rodada_atual']):
+    limit = 39 if market['game_over'] else market['rodada_atual']
+    for i in range(1, limit):
         path = PLAYERS_PATH.replace('x', str(i))
         players = read_json(path)
         if players is None:
-            players = fetch(f'atletas/pontuados/{i}')
+            try:
+                players = fetch(f'atletas/pontuados/{i}')
+            except Exception:
+                continue
         for _id, player in players['atletas'].items():
             player_history = players_history.get(_id)
             _round = get_player_round(player_history, i)
