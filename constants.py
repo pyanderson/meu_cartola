@@ -3,6 +3,7 @@ import os
 DATA_PATH = 'data'
 DOCS_PATH = os.path.join('docs', 'data')
 MARKET_PATH = os.path.join(DATA_PATH, 'mercado.json')
+PLAYERS_MARKET_PATH = os.path.join(DATA_PATH, 'atletas_mercado.json')
 LEAGUE_PATH = os.path.join(DATA_PATH, 'liga.json')
 ROUNDS_PATH = os.path.join(DATA_PATH, 'rodadas.json')
 PLAYERS_HISTORY_PATH = os.path.join(DATA_PATH, 'historico.json')

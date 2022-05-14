@@ -25,7 +25,7 @@ Na maioria dos navegadores basta apertar F12 para abrir a ferramenta de desenvol
 Faça login no Cartola FC.
 
 #### Network
-Clique na aba network e pesquise por "api.cartolafc" e escolha qualquer uma das requisições:
+Clique na aba network e pesquise por "api.cartola" e escolha qualquer uma das requisições:
 
 ![Aba network da ferramenta de desenvolvedor](/images/passo1.png)
 
@@ -47,11 +47,11 @@ Você pode executar o script de download de duas formas, definindo o token e a t
 ```bash
 $ export CARTOLA_TOKEN=TOKEN
 $ export CARTOLA_GLB_TAG=GLB_TAG
-$ python download.py "AIII BRAAAASILLLL CHAMPIONS LEAGUE"
+$ python download.py "LAMPIÕENS CHAMPIONS LEAGUE"
 ```
 
 ```bash
-$ python download.py "AIII BRAAAASILLLL CHAMPIONS LEAGUE" --token TOKEN --glb-tag GLB_TAG
+$ python download.py "LAMPIÕENS CHAMPIONS LEAGUE" --token TOKEN --glb-tag GLB_TAG
 ```
 
 ## Gerar dados dos gráficos

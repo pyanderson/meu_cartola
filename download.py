@@ -7,8 +7,8 @@ import requests
 
 # local imports
 from constants import (DATA_PATH, LEAGUE_PATH, MARKET_PATH,
-                       PLAYERS_HISTORY_PATH, PLAYERS_PATH, ROUNDS_PATH,
-                       SHIELDS_PATH)
+                       PLAYERS_HISTORY_PATH, PLAYERS_MARKET_PATH, PLAYERS_PATH,
+                       ROUNDS_PATH, SHIELDS_PATH)
 from helpers import read_json, write_json
 
 
@@ -27,7 +27,7 @@ def download_team_shield(team):
 
 
 def fetch(resource, glb_tag=None, token=None):
-    url = f'https://api.cartolafc.globo.com/{resource}'
+    url = f'https://api.cartola.globo.com/{resource}'
     headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0',  # noqa
     }
@@ -85,6 +85,11 @@ def get_player_round(history, round_id):
     return None
 
 
+def download_clubs_data(glb_tag, token):
+    players_market = fetch('atletas/mercado')
+    write_json(PLAYERS_MARKET_PATH, players_market)
+
+
 def download_players_history(glb_tag, token):
     market = fetch('mercado/status')
     players_history = read_json(PLAYERS_HISTORY_PATH, {})
@@ -135,4 +140,5 @@ if __name__ == '__main__':
     if args.glb_tag is None:
         raise SystemExit('é necessário um valor para a tag GLB')
     download_league_data(args.name, args.glb_tag, args.token)
+    download_clubs_data(args.glb_tag, args.token)
     download_players_history(args.glb_tag, args.token)

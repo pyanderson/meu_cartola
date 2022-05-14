@@ -3,8 +3,8 @@ from operator import itemgetter
 
 # local imports
 from constants import (EMPTY_TEAM_SHIELD, HIGHLIGHTS_PATH, LEAGUE_STATS_PATH,
-                       PLAYERS_FOLDER_PATH, ROUNDS_PATH, SCHEMES_PATH,
-                       TEAMS_PATH)
+                       PLAYERS_FOLDER_PATH, PLAYERS_MARKET_PATH, ROUNDS_PATH,
+                       SCHEMES_PATH, TEAMS_PATH)
 from helpers import read_json, write_json
 
 
@@ -219,6 +219,7 @@ def generate_teams_data():
     teams = {}
     league = {'atletas': {}, 'clubes': {}}
     clubs = {'1': empty_team(1)}
+    clubs.update(read_json(PLAYERS_MARKET_PATH, {}).get('clubes', {}))
     for _round in rounds:
         positions = []
         patrimony = []
@@ -231,7 +232,6 @@ def generate_teams_data():
                 teams[name] = new_team(team)
             for player in team['atletas']:
                 teams[name] = update_scouts(teams[name], player)
-                clubs.update(team.get('clubes', {}))
                 _team = clubs[str(player['clube_id'])]
                 if team['capitao_id'] == player['atleta_id']:
                     player['pontos_num'] *= 2
