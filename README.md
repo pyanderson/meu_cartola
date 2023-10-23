@@ -1,8 +1,5 @@
 # Meu Cartola
 
-[Acesse Aqui](https://pyanderson.github.io/meu_cartola/)
-
-
 ## Dependências
 - [Python 3.6+](https://www.python.org/downloads/)
 
